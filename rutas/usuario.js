@@ -1,5 +1,5 @@
 var expres = require('express')
- var bcrypt = require('bcryptjs');
+var bcrypt = require('bcryptjs');
 var app = expres();
  var jwt = require('jsonwebtoken')
 var Usuario = require('../modelos/usuario')
@@ -27,15 +27,16 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                Usuario.count({}, (err, conteo) => {
+                // Usuario.count({}, (err, conteo) => {
 
-                    res.status(200).json({
-                        ok: true,
-                        usuarios: usuario,
-                        total: conteo
-                    });
+                   
 
-                })
+                // })
+                res.status(200).json({
+                    ok: true,
+                    usuarios: usuario,
+                    // total: conteo
+                });
 
             });
 });
@@ -67,11 +68,13 @@ app.put('/:id', autenticacion.verificatoken, (req, res) => {
                 erros: { message: 'no existe el usuario con ese id ' }
             });
         }
+       
         usuario.Nombre = body.nombre;
         usuario.email = body.email;
         usuario.role = body.role;
 
         usuario.save((err, usuarioGuardado) => {
+            
             if (err) {
                 return res.status(400).json({
                     ok: false,
@@ -79,9 +82,10 @@ app.put('/:id', autenticacion.verificatoken, (req, res) => {
                     erros: err
                 });
             }
+            usuarioGuardado.password='<3'
             res.status(200).json({
                 ok: true,
-                body: usuarioGuardado
+                usuario: usuarioGuardado
             });
 
         });

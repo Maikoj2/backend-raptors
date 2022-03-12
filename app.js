@@ -14,6 +14,9 @@ app.use(bodyParser.json());
  var appRoutes = require('./rutas/app');
  var loginRout = require('./rutas/login');
  var UsuarioRoutes = require('./rutas/usuario');
+ var DeportistaRoutes = require('./rutas/deportista');
+ var personaRoutes = require('./rutas/persona');
+ var DiciplinaRoutes = require('./rutas/Diciplina');
 
 // coneccion bd
 mongoose.connection.openUri('mongodb://localhost:27017/RaptorsDb', (err, res) => {
@@ -21,6 +24,9 @@ mongoose.connection.openUri('mongodb://localhost:27017/RaptorsDb', (err, res) =>
     console.log('base de datos: \x1b[32m%s\x1b[0m', 'online');
 }); 
 // rutas
+app.use('/persona', personaRoutes);
+app.use('/deportista', DeportistaRoutes);
+app.use('/diciplina', DiciplinaRoutes);
 app.use('/login', loginRout);
 app.use('/usuario', UsuarioRoutes);
 app.use('/', appRoutes);
