@@ -10,7 +10,7 @@ var rolesValidos = {
 var deportistaSchema = new schema({
 
 
-    _id:    { type: String , required: false, unique: true},
+    _id:    { type: String , required: false, unique: true, ref: 'persona'},
     FechaNacimiento: { type: Date, required: [true, 'el nombre es necesario'] },
     DepartamentNacimiento: { type: String, required: [true, 'el nombre es necesario'] },
     MunicipioNacimiento: { type: String, required: [true, 'el nombre es necesario'] },
@@ -29,11 +29,10 @@ var deportistaSchema = new schema({
     Estatura: { type: String,required: false },
     Peso: { type: String ,required: false},
     Estado: { type: String ,required: false,  default: 'ACTIVO', enum: rolesValidos},
-    Diciplina: { type: schema.Types.ObjectId, ref: 'disciplina', required: true  },
     
     
     
-});
+},{ collection: 'deportistas' });
 
 deportistaSchema.plugin(uniquevallidator, { message: '{PATH} debe ser unico' })
 

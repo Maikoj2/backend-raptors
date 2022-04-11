@@ -1,10 +1,10 @@
 var expres = require('express')
 var jwt = require('jsonwebtoken')
 var bcrypt = require('bcryptjs');
-var SEED = require('../config/config').SEED;
-var CLIENT_ID = require('../config/config').CLIENT_ID;
+var SEED = require('../../config/config').SEED;
+var CLIENT_ID = require('../../config/config').CLIENT_ID;
 var app = expres();
-var Usuario = require('../modelos/usuario')
+var Usuario = require('../../modelos/usuario')
 // const { OAuth2Client } = require('google-auth-library');
 // const client = new OAuth2Client(CLIENT_ID);
 

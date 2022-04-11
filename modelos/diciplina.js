@@ -4,13 +4,14 @@ var schema = mongoose.Schema;
 
 var disciplinaSchema = new schema({
 
+    
     NombreDiciplina: { type: String, required: [true, 'el nombre es necesario'] },
-    Horario: { type: String, required: [true, 'el Horario es necesario'] },
-    Lugar: { type: String, required: true},
-    Hora: { type: String, required: true}
+    valor_hora: { type: Number, required: true},
+    valor_mensualidad: { type: Number, required: true},
+    
 
     
-});
+},{ collection: 'disciplinas' });
 
 disciplinaSchema.plugin(uniquevallidator, { message: '{PATH} debe ser unico' })
 

@@ -1,9 +1,9 @@
-var expres = require('express')
+var expres = require('express');
 var bcrypt = require('bcryptjs');
 var app = expres();
  var jwt = require('jsonwebtoken')
-var Usuario = require('../modelos/usuario')
- var autenticacion = require('../middelware/autenticacion')
+var Usuario = require('../../modelos/usuario')
+ var autenticacion = require('../../middelware/autenticacion')
 
 // ==============================
 // obtener todos los Usuarios
@@ -27,16 +27,16 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                // Usuario.count({}, (err, conteo) => {
+                Usuario.count({}, (err, conteo) => {
 
-                   
+                    res.status(200).json({
+                        ok: true,
+                        usuarios: usuario,
+                        total: conteo
+                    });
 
-                // })
-                res.status(200).json({
-                    ok: true,
-                    usuarios: usuario,
-                    // total: conteo
-                });
+                })
+                
 
             });
 });

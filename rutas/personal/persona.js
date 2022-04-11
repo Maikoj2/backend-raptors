@@ -1,6 +1,6 @@
 var expres = require('express')
 var app = expres();
-var persona = require('../modelos/Personas');
+var persona = require('../../modelos/Personas');
 
 // ==============================
 // obtener todos los deportistas
@@ -21,15 +21,15 @@ app.get('/', (req, res, next)=>{
                         erros: err
                     });
                 }
-                // persona.count({}, (err, conteo) => {
-                   
-                // });
-                res.status(200).json({
-                    ok: true,
-                    personas: personas,
-                    // total: conteo
-
+                persona.count({}, (err, conteo) => {
+                    res.status(200).json({
+                        ok: true,
+                        personas: personas,
+                        total: conteo
+    
+                    });
                 });
+              
             });
 });
 

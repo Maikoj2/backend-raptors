@@ -23,14 +23,12 @@ var PersonaSchema = new schema({
     Ocupacion: { type: String, required: [true, 'el nombre es necesario'] },
     email: { type: String, required: [true, 'el correo es necesario'] },
     EPS: { type: String, required: false },
-    tipoDiciplina: { type: String, default: 'deportista', required: true  },
     email: { type: String, required: [true, 'el correo es necesario'] },
-    idperfil: { type: String, ref: 'deportista', required: false  },
     Usuario: { type: schema.Types.ObjectId, ref: 'usuario', required: true  },
     role: { type: String, required: true, default: 'USER_ROLE', enum: rolesValidos }
    
     
-});
+},{ collection: 'personas' });
 PersonaSchema.plugin(uniquevallidator, { message: '{PATH} debe ser unico' });
 
 module.exports = mongoose.model('persona', PersonaSchema);
