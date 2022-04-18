@@ -27,7 +27,7 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                Disciplina.count({}, (err, conteo) => {
+                Disciplina.estimatedDocumentCount({}, (err, conteo) => {
 
                     res.status(200).json({
                         ok: true,
@@ -69,7 +69,7 @@ app.put('/:id', (req, res) => {
             });
         }
 
-        disciplina.NombreDiciplina = body.nombre;
+        disciplina.Nombre = body.nombre;
         disciplina.valor_hora= body.vhora;
         disciplina.valor_mensualidad= body.vmes;
 
@@ -101,7 +101,7 @@ app.post('/', autenticacion.verificatoken,
         var body = req.body;
 
         var disciplina = new Disciplina({
-            NombreDiciplina: body.nombre,
+            Nombre: body.nombre,
             Horario: body.horario,
             Hora: body.hora,
             Lugar: body.Lugar,
@@ -136,7 +136,7 @@ app.delete('/:id', autenticacion.verificatoken, (req, res) => {
     var id = req.params.id;
     var data;
 
-    Disciplina.findByIdAndRemove(id, (err, disciplinaborrado) => {
+    Disciplina.deleteOne({_id: id}, (err, disciplinaborrado) => {
 
 
         if (err) {

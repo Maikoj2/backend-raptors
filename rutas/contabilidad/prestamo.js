@@ -24,16 +24,16 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                // deportista.count({}, (err, conteo) => {
+                Prestamo.estimatedDocumentCount({}, (err, conteo) => {
 
+                    res.status(200).json({
+                        ok: true,
+                        prestamos: prestamo,
+                        total: conteo
+                    });
 
-
-                // })
-                res.status(200).json({
-                    ok: true,
-                    prestamos: prestamo,
-                    // total: conteo
-                });
+                })
+                
 
             });
 
@@ -137,7 +137,7 @@ app.delete('/:id', autenticacion.verificatoken, (req, res) => {
     var id = req.params.id;
     var data;
 
-    Prestamo.findByIdAndRemove(id, (err, prestamoborrado) => {
+    Prestamo.deleteOne({_id: id}, (err, prestamoborrado) => {
 
 
         if (err) {

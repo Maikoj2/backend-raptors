@@ -18,7 +18,7 @@ app.get('/', (req, res, next) => {
 
     Profesor.find({},)
         .skip(desde)
-        .populate({
+        .populate([{
             path: '_id',
             populate: [
                 {
@@ -26,7 +26,10 @@ app.get('/', (req, res, next) => {
                     select: 'Nombre email'
                 }
             ]
-        }
+        },
+        {
+            path: 'id_sueldoBase'
+        }]
         )
         .limit(5)
         .exec(
@@ -38,7 +41,7 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                Profesor.count({}, (err, conteo) => {
+                Profesor.estimatedDocumentCount({}, (err, conteo) => {
                     res.status(200).json({
                         ok: true,
                         profesores: persona,
@@ -64,6 +67,7 @@ app.put('/:id', autenticacion.verificatoken, (req, res) => {
     var body = req.body;
     var id_usuario = req.usuario._id;
     var ProfeDato = new Profesor({
+        id_sueldoBase: body.id_sueldoBase,
         FechaNacimiento: body.FNacimiento,
         DepartamentNacimiento: body.departamentN,
         MunicipioNacimiento: body.MunicipioN,
@@ -71,7 +75,7 @@ app.put('/:id', autenticacion.verificatoken, (req, res) => {
 
     });
     var persona = new Persona({
-        Nombres: body.nombres,
+        Nombre: body.nombres,
         Apellidos: body.apellidos,
         Sexo: body.sexo,
         Barrio: body.barrio,
@@ -80,6 +84,7 @@ app.put('/:id', autenticacion.verificatoken, (req, res) => {
         Ocupacion: body.ocupacion,
         EPS: body.eps,
         email: body.email,
+        role: body.role,
         Usuario: id_usuario
 
     });
@@ -107,7 +112,7 @@ app.post('/', autenticacion.verificatoken,
         var persona = new Persona({
             TipoId: body.tipoid,
             _id: body.id,
-            Nombres: body.nombres,
+            Nombre: body.nombres,
             Apellidos: body.apellidos,
             Sexo: body.sexo,
             Barrio: body.barrio,
@@ -117,11 +122,13 @@ app.post('/', autenticacion.verificatoken,
             EPS: body.eps,
             email: body.email,
             idperfil: body.id,
+            role: body.role,
             Usuario: id_usuario
 
         });
         var profesor = new Profesor({
             _id: persona._id,
+            id_sueldoBase: body.id_sueldoBase,
             FechaNacimiento: body.FNacimiento,
             DepartamentNacimiento: body.departamentN,
             MunicipioNacimiento: body.MunicipioN,
@@ -203,7 +210,7 @@ function buscarclase(busqueda) {
 }
 function BuscarBorrarpersona(busqueda) {
     return new Promise((resolve, reject) => {
-        Persona.findByIdAndRemove({ _id: busqueda })
+        Persona.deleteOne({ _id: busqueda })
             // .populate('usuario', 'Nombre email')
             .exec((err, persona) => {
 
@@ -222,7 +229,7 @@ function BuscarBorrarpersona(busqueda) {
 
 function BuscarBorrarProfesor(busqueda) {
     return new Promise((resolve, reject) => {
-        Profesor.findByIdAndRemove({ _id: busqueda })
+        Profesor.deleteOne({ _id: busqueda })
             // .populate('usuario', 'Nombre email')
             .exec((err, Profesor) => {
 

@@ -7,6 +7,7 @@ var ProfesorSchema = new schema({
 
 
     _id:    { type: String ,ref: 'persona', required: false, unique: true},
+    id_sueldoBase:    { type: String ,ref: 'sueldosBase', required: true},
     FechaNacimiento: { type: Date, required: [true, 'el nombre es necesario'] },
     DepartamentNacimiento: { type: String, required: [true, 'el nombre es necesario'] },
     MunicipioNacimiento: { type: String, required: [true, 'el nombre es necesario'] },

@@ -35,7 +35,7 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                Registro.count({}, (err, conteo) => {
+                Registro.estimatedDocumentCount({}, (err, conteo) => {
                     res.status(200).json({
                         ok: true,
                         registro: prestamo,
@@ -313,7 +313,7 @@ app.delete('/:id', autenticacion.verificatoken, (req, res) => {
             Object.keys(respuestas[2]).length === 0 &&
             Object.keys(respuestas[3]).length === 0
         ) {
-            Registro.findByIdAndRemove(id, (err, registroborrado) => {
+            Registro.deleteOne({_id: id}, (err, registroborrado) => {
                 if (err) {
                     return res.status(500).json({
                         ok: false,

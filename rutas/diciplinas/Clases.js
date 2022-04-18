@@ -28,7 +28,7 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                Clase.count({}, (err, conteo) => {
+                Clase.estimatedDocumentCount({}, (err, conteo) => {
                     res.status(200).json({
                         ok: true,
                         clase: prestamo,
@@ -176,7 +176,7 @@ app.delete('/:id', autenticacion.verificatoken, (req, res) => {
                 erros: { message: 'borre los registros antes de borrar una clase ' }
             });
         }
-        clase.findByIdAndRemove(id, (err, claseborrado) => {
+        clase.deleteOne({_id: id}, (err, claseborrado) => {
 
 
             if (err) {

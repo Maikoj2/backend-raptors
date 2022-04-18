@@ -12,6 +12,7 @@ var rolesValidos = {
 
 var PersonaSchema = new schema({
 
+
     _id:    { type: String , required: true, unique: true},
     TipoId: { type: String,  required: [true, 'el nombre es necesario'] },
     Nombres: { type: String, required: [true, 'el nombre es necesario'] },

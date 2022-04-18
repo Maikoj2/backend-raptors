@@ -27,7 +27,7 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                Usuario.count({}, (err, conteo) => {
+                Usuario.estimatedDocumentCount({}, (err, conteo) => {
 
                     res.status(200).json({
                         ok: true,
@@ -140,7 +140,7 @@ app.delete('/:id', autenticacion.verificatoken, (req, res) => {
     var id = req.params.id;
 
 
-    Usuario.findByIdAndRemove(id, (err, usuarioborrado) => {
+    Usuario.deleteOne({_id: id}, (err, usuarioborrado) => {
 
 
         if (err) {

@@ -21,7 +21,7 @@ app.get('/', (req, res, next)=>{
                         erros: err
                     });
                 }
-                persona.count({}, (err, conteo) => {
+                persona.estimatedDocumentCount({}, (err, conteo) => {
                     res.status(200).json({
                         ok: true,
                         personas: personas,

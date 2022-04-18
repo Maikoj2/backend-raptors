@@ -45,7 +45,7 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                Deportista.count({}, (err, conteo) => {
+                Deportista.estimatedDocumentCount({}, (err, conteo) => {
 
                     res.status(200).json({
                         ok: true,
@@ -92,7 +92,7 @@ app.put('/:id', autenticacion.verificatoken, (req, res) => {
 
     });
     var persona = new Persona({
-        Nombres: body.nombres,
+        Nombre: body.nombres,
         Apellidos: body.apellidos,
         Sexo: body.sexo,
         Barrio: body.barrio,
@@ -101,7 +101,8 @@ app.put('/:id', autenticacion.verificatoken, (req, res) => {
         Ocupacion: body.ocupacion,
         EPS: body.eps,
         email: body.email,
-        Usuario: id_usuario
+        Usuario: id_usuario,
+        role: body.role,
 
     });
 
@@ -128,7 +129,7 @@ app.put('/contacto/:id', autenticacion.verificatoken, (req, res) => {
     var body = req.body;
     var contacto = new contatoEmergencia({
         _id: body.IdContacto,
-        Nombres: body.NombresContacto,
+        Nombre: body.NombresContacto,
         Apellidos: body.ApellidosContacto,
         Barrio: body.BarrioContacto,
         Direccion: body.direccionContacto,
@@ -161,7 +162,7 @@ app.post('/', autenticacion.verificatoken,
         var persona = new Persona({
             TipoId: body.tipoid,
             _id: body.id,
-            Nombres: body.nombres,
+            Nombre: body.nombres,
             Apellidos: body.apellidos,
             Sexo: body.sexo,
             Barrio: body.barrio,
@@ -170,6 +171,7 @@ app.post('/', autenticacion.verificatoken,
             Ocupacion: body.ocupacion,
             EPS: body.eps,
             email: body.email,
+            role: body.role,
             Usuario: id_usuario
 
         });
@@ -194,7 +196,7 @@ app.post('/', autenticacion.verificatoken,
         });
         var contacto1 = new contatoEmergencia({
             _id: body.IdContacto,
-            Nombres: body.NombresContacto,
+            Nombre: body.NombresContacto,
             Apellidos: body.ApellidosContacto,
             Barrio: body.BarrioContacto,
             Direccion: body.direccionContacto,
@@ -205,7 +207,7 @@ app.post('/', autenticacion.verificatoken,
         });
         var contacto2 = new contatoEmergencia({
             _id: body.IdContacto2,
-            Nombres: body.NombresContacto2,
+            Nombre: body.NombresContacto2,
             IdContacto: body.IdContacto,
             Apellidos: body.ApellidosContacto2,
             Barrio: body.BarrioContacto2,
@@ -320,7 +322,7 @@ app.delete('/:id', autenticacion.verificatoken, (req, res) => {
                 erros: { message: 'borre los registros antes de borrar una clase ' }
             });
         }
-        Persona.findByIdAndRemove(id, (err, usuarioborrado) => {
+        Persona.deleteOne({_id: id}, (err, usuarioborrado) => {
 
 
             if (err) {
@@ -338,7 +340,7 @@ app.delete('/:id', autenticacion.verificatoken, (req, res) => {
                 });
             }
             data = usuarioborrado;
-            Deportista.findByIdAndRemove(id, (err, usuarioborrado) => {
+            Deportista.deleteOne({_id: id}, (err, usuarioborrado) => {
 
 
                 if (err) {

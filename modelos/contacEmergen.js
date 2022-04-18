@@ -4,7 +4,7 @@ var schema = mongoose.Schema;
 var ContactoSchema = new schema({
 
     _id:    { type: String , required: true, unique: true},
-    Nombres: { type: String, required: [true, 'el nombre es necesario'] },
+    Nombre: { type: String, required: [true, 'el nombre es necesario'] },
     Apellidos: { type: String, required: [true, 'el nombre es necesario'] },
     Barrio: { type: String, required: [true, 'el nombre es necesario'] },
     Direccion: { type: String, required: [true, 'el nombre es necesario'] },

@@ -41,7 +41,7 @@ app.get('/', (req, res, next) => {
                         erros: err
                     });
                 }
-                Asistencia.count({}, (err, conteo) => {
+                Asistencia.estimatedDocumentCount({}, (err, conteo) => {
 
                     console.log(asistencia);
 
@@ -304,7 +304,7 @@ app.delete('/:id', autenticacion.verificatoken, (req, res) => {
     var data;
 
 
-    Asistencia.findByIdAndRemove(id, (err, registroborrado) => {
+    Asistencia.deleteOne({_id: id}, (err, registroborrado) => {
 
 
         if (err) {

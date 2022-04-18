@@ -5,7 +5,7 @@ var schema = mongoose.Schema;
 var disciplinaSchema = new schema({
 
     
-    NombreDiciplina: { type: String, required: [true, 'el nombre es necesario'] },
+    Nombre: { type: String, required: [true, 'el nombre es necesario'] },
     valor_hora: { type: Number, required: true},
     valor_mensualidad: { type: Number, required: true},
     
