@@ -6,7 +6,7 @@ bancken de proyecto de raptors club de voley
 This project was make  with [node.js] version v16.13.2
 ## how use it
 
-download the proyect and  run npm install.
+download the project and  run npm install.
 
 
 ## Development server
