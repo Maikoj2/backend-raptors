@@ -1,5 +1,5 @@
-var jwt = require('jsonwebtoken')
-var SEED = require('../config/config').SEED;
+const jwt = require('jsonwebtoken')
+const SEED = require('../config/config').SEED;
 
 
 // ==============================
@@ -7,7 +7,7 @@ var SEED = require('../config/config').SEED;
 // ==============================
 exports.verificatoken = function(req, res, next) {
 
-    var token = req.query.token;
+    const token = req.query.token;
     jwt.verify(token, SEED, (err, decoded) => {
         if (err) {
             return res.status(401).json({
@@ -16,12 +16,7 @@ exports.verificatoken = function(req, res, next) {
                 erros: err
             });
         }
-        req.usuario = decoded.usuario;
+        req.user = decoded.usuario;
         next();
-        // res.status(401).json({
-        //     ok: true,
-        //     decoded: decoded
-        // });
-
     })
 }

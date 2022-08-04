@@ -98,7 +98,7 @@ app.put('/:id', autenticacion.verificatoken, (req, res) => {
 
     Clase.findById(id, (err, clase) => {
 
-
+ 
         if (err) {
             return res.status(500).json({
                 ok: false,

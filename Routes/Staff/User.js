@@ -11,7 +11,7 @@ app.get('/', autenticacion.verificatoken, getItems);
 /**
  * Create a new user on database 
  */
-app.post('/', autenticacion.verificatoken, createItem);
+app.post('/', createItem);
 
 /**
  * Update a user by id 
@@ -24,4 +24,4 @@ app.put('/:id', autenticacion.verificatoken, updateItem );
 
 app.delete('/:id', autenticacion.verificatoken, deleteItem);
 
-module.exports = app;
+module.exports = app; 

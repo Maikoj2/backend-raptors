@@ -1,9 +1,9 @@
 var expres = require('express')
 var app = expres();
 var Usuario = require('../../models/staff/user')
-var personal = require('../../models/staff/Profesor')
-var deportista = require('../../models/staff/deportista')
-var personas = require('../../models/staff/Personas')
+var personal = require('../../models/staff/Teacher')
+var deportista = require('../../models/staff/Athlete')
+var personas = require('../../models/staff/people')
 var clase = require('../../models/clases/clase')
 var diciplina = require('../../models/clases/diciplina')
 
@@ -119,7 +119,7 @@ function BuscarGeneralpornombre(busqueda, colleccion, desde) {
             .exec((err, diario) => {
 
                 if (err) {
-                    reject('error al cargar asistencia', err)
+                     reject('error al cargar asistencia', err)
                 } else {
 
                     resolve(diario)

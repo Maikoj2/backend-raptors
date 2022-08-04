@@ -1,8 +1,8 @@
 
 const  fs = require('fs');
 const  user = require('../../models/staff/user')
-const  personal = require('../../models/staff/Profesor')
-const  deportista = require('../../models/staff/deportista')
+const  Teacher = require('../../models/staff/Teacher')
+const  Athlete = require('../../models/staff/Athlete')
 
 
 /**
@@ -74,7 +74,7 @@ function updateByColletions(typeCollection, id, fileName, res) {
 
     switch (typeCollection) {
         case 'deportista':
-            getById(id, deportista).then(resp => {
+            getById(id, Athlete).then(resp => {
                 const  oldPath = './uploads/deportista/' + resp[0].img;
                 //  si exite, elimina la imagen anterior
                 if (fs.existsSync(oldPath)) {
@@ -142,7 +142,7 @@ function updateByColletions(typeCollection, id, fileName, res) {
 
             break;
         case 'personal':
-            getById(id, personal).then(resp => {
+            getById(id, Teacher).then(resp => {
                 const  oldPath = './uploads/personal/' + resp[0].img;
                 //  si exite, elimina la imagen anterior
                 if (fs.existsSync(oldPath)) {

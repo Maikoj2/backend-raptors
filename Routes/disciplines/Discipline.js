@@ -10,7 +10,7 @@ var autenticacion = require('../../middelware/autenticacion')
 
 app.get('/', (req, res, next) => {
 
-
+ 
 
     var desde = req.query.desde || 0;
     desde = Number(desde);

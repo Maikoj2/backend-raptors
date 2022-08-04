@@ -8,7 +8,11 @@ var SueldoBaseSchema = new schema({
     Valor_Hora: { type: Number, required: [true, 'el nombre es necesario'] },
     Usuario: { type: schema.Types.ObjectId, ref: 'usuario', required: true  }  
     
-},{ collection: 'sueldosBases' });
+},{ 
+    collection: 'sueldosBases', 
+}
+    
+    );
 
 SueldoBaseSchema.plugin(uniquevallidator, { message: '{PATH} debe ser unico' })
 

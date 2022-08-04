@@ -117,7 +117,6 @@ const updateItem = async (req, res) => {
                 messege: 'Error upduting User',
                 erros: err
             });
-
             savededUser.password = '<3'
             res.status(200).json({
                 ok: true,

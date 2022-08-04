@@ -2,7 +2,7 @@ var expres = require('express')
 var app = expres();
 var SueldoBase = require('../../models/nomina/sueldobase');
 var autenticacion = require('../../middelware/autenticacion');
-var Personal = require('../../models/staff/Profesor')
+var Personal = require('../../models/staff/Teacher')
 
 
 //  rutas
