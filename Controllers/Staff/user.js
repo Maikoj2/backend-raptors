@@ -12,6 +12,8 @@ const getItems = async (req, res) => {
 
     let from = req.query.from || 0;
     from = Number(from);
+    const count = await UserModel.estimatedDocumentCount();
+
 
     await UserModel.find({}, 'Name email img role createdAt updatedAt')
         .skip(from)
@@ -21,9 +23,7 @@ const getItems = async (req, res) => {
                 if (err) {
                     response.error(res, res,'error loandig data for User', 500, err);
                 }
-                UserModel.estimatedDocumentCount({}, (err, count) => {
-                    response.success(res, res, 'load completed', 200, user, count )
-                })
+                response.success(res, res, 'load completed', 200, user, count )
 
 
             });
@@ -45,7 +45,6 @@ const createItem = async (req, res) => {
     const { body } = req;
 
     const user = new UserModel({
-        id: '',
         Name: body.Name,
         email: body.email,
         password: bcrypt.hashSync(body.password, 10),

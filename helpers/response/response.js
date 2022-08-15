@@ -1,8 +1,8 @@
 
 
 
- function success (req, res, message, status, data = [] ,count) {
-     if (!count)return res.status(status || 200).json({
+ function success (req, res, message, status, data = [] ,count = 0) {
+     if (count === 0) return res.status(status || 200).json({
         ok: true,
         message: message,
         Data: data,

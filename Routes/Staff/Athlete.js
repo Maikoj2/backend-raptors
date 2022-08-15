@@ -3,9 +3,9 @@ var autenticacion = require('../../middelware/autenticacion');
 var app = expres();
 var Deportista = require('../../models/staff/Athlete');
 var Persona = require('../../models/staff/people');
-var contatoEmergencia = require('../../models/staff/contacEmergen');
-var Registro = require('../../models/clases/Registro');
-const { getItems, createItem, updateItem } = require('../../Controllers/Staff/Athlete');
+var contatoEmergencia = require('../../models/staff/contactEmergen');
+var Registro = require('../../models/discipline/Registro');
+const { getItems, createItem, updateItem, createcontact, updatecontact } = require('../../Controllers/Staff/Athlete');
 
 
 /**
@@ -19,36 +19,15 @@ app.put('/:id', autenticacion.verificatoken, updateItem);
 /**
  * Update a user by id [Todo]
  */
-app.put('/contacto/:id', autenticacion.verificatoken, (req, res) => {
-
-    var id = req.params.id;
-    var body = req.body;
-    var contacto = new contatoEmergencia({
-        _id: body.IdContacto,
-        Nombre: body.NombresContacto,
-        Apellidos: body.ApellidosContacto,
-        Barrio: body.BarrioContacto,
-        Direccion: body.direccionContacto,
-        Telefono: body.telefonoContacto,
-        Ocupacion: body.ocupacioncontacto,
-        email: body.emailcontacto
-    });
-
- 
-
-    Actualizarcontacto(id, contacto).then(respuestas => {
-        res.status(200).json({
-            ok: true,
-            message: ' el contacto fue Actualizado Correcamente',
-            persona: respuestas,
-        })
-    }
-    );
-});
+app.put('/contact/:id', autenticacion.verificatoken, updatecontact );
 /**
  * Create a new user on database 
  */
 app.post('/', autenticacion.verificatoken, createItem);
+/**
+ * Create a new contact on database 
+ */
+app.post('/contact', autenticacion.verificatoken, createcontact);
 
 /**
  * delete a user by id 

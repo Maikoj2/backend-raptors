@@ -3,7 +3,7 @@ var app = expres();
 var autenticacion = require('../../middelware/autenticacion')
 var Persona = require('../../models/staff/people');
 var Profesor = require('../../models/staff/Teacher');
-var Clase = require('../../models/clases/clase');
+var Clase = require('../../models/discipline/clase');
 const { getItems, createItem, updateItem } = require('../../Controllers/Staff/Teacher');
 
 /**

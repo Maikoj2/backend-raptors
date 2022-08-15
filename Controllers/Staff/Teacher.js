@@ -10,6 +10,8 @@ const { response , UpdatingOnDB, SavingOnDB } = require('../../helpers');
 const getItems = async (req, res) => {
     let from = req.query.from || 0;
     from = Number(from);
+    const count = await TeacherModel.estimatedDocumentCount();
+
 
     TeacherModel.find({})
         .skip(from)
@@ -27,9 +29,8 @@ const getItems = async (req, res) => {
         .limit(5)
         .exec((err, teachers) => {
             if (err) response.error(res, res, 'error loandig data for teacher', 500, err);
-            TeacherModel.estimatedDocumentCount({},
-                (count) => response.success(res, res, 'load completed', 200, teachers, count)
-            )
+            response.success(res, res, 'load completed', 200, teachers, count )
+
         });
 };
 
@@ -54,6 +55,7 @@ const createItem = async (req, res) => {
         profession: body.profession
     });
 
+
     SavingOnDB(Teacher)
         .then(resp => response.success(res, res, 'teacher was stored Safely', 201, resp))
         .catch((e) => response.error(res, res, 'error storeding teacher', 500, e))
@@ -75,6 +77,8 @@ const updateItem = async (req, res) => {
         id_BaseSalary: body.id_BaseSalary,
         profession: body.profession
     });
+    Teacher._id = id;
+    Teacher.id = id;
     UpdatingOnDB(id, TeacherModel, Teacher)
         .then(resp => response.success(req, res, 'teacher was updated Safely', 200, resp)
         ).catch((e) => response.error(req, res, 'error Updating Teacher', 500, e))

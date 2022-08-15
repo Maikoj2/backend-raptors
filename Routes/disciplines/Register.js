@@ -1,12 +1,12 @@
 var expres = require('express')
 var app = expres();
-var Registro = require('../../models/clases/Registro');
-var Clase = require('../../models/clases/clase');
+var Registro = require('../../models/discipline/Registro');
+var Clase = require('../../models/discipline/clase');
 var Pagodiario = require('../../models/facturas/pagos_diario');
 var pagosMensuales = require('../../models/facturas/mensualidad');
 var autenticacion = require('../../middelware/autenticacion');
 var Prestamo = require('../../models/facturas/Prestamos');
-var asistencia = require('../../models/clases/asistencia');
+var asistencia = require('../../models/discipline/asistencia');
 
 
 

@@ -4,8 +4,8 @@ var Usuario = require('../../models/staff/user')
 var personal = require('../../models/staff/Teacher')
 var deportista = require('../../models/staff/Athlete')
 var personas = require('../../models/staff/people')
-var clase = require('../../models/clases/clase')
-var diciplina = require('../../models/clases/diciplina')
+var clase = require('../../models/discipline/clase')
+var diciplina = require('../../models/discipline/discipline')
 
 //  rutas
 app.get('/all/:search', (req, res, next) => {

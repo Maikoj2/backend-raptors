@@ -1,6 +1,7 @@
 const  mongoose = require('mongoose');
 const  uniquevallidator = require('mongoose-unique-validator');
 const  schema = mongoose.Schema;
+const  mongooseDelete = require('mongoose-delete'); 
 
 const  rolesValidos = {
 
@@ -51,5 +52,6 @@ const  userSchema = new schema(
 );
 
 userSchema.plugin(uniquevallidator, { message: '{PATH} must be unique' })
+userSchema.plugin(mongooseDelete, {overrideMethods: 'all'})
 
 module.exports = mongoose.model('Users', userSchema);

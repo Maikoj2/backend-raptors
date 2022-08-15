@@ -1,9 +1,9 @@
 var expres = require('express')
 var app = expres();
-var Registro = require('../../models/clases/Registro');
-var Clase = require('../../models/clases/clase');
+var Registro = require('../../models/discipline/Registro');
+var Clase = require('../../models/discipline/clase');
 var autenticacion = require('../../middelware/autenticacion');
-const clase = require('../../models/clases/clase');
+const clase = require('../../models/discipline/clase');
 
 
 

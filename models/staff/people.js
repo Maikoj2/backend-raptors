@@ -2,6 +2,7 @@ const { type } = require('express/lib/response');
 const mongoose = require('mongoose');
 const uniquevallidator = require('mongoose-unique-validator');
 const schema = mongoose.Schema;
+const  mongooseDelete = require('mongoose-delete'); 
 
 
 const validRole = {
@@ -91,5 +92,6 @@ const PeopleSchema = new schema({
    
     });
 PeopleSchema.plugin(uniquevallidator, { message: '{PATH} must be unique' });
+PeopleSchema.plugin(mongooseDelete, {overrideMethods: 'all'});
 
 module.exports = mongoose.model('peoples', PeopleSchema);

@@ -1,5 +1,5 @@
 
-const { AthletesModel } = require("../../models");
+const { AthletesModel,ContactModel } = require("../../models");
 const { response, UpdatingOnDB,  SavingOnDB } = require('../../helpers');
 
 /**
@@ -10,6 +10,8 @@ const { response, UpdatingOnDB,  SavingOnDB } = require('../../helpers');
 const getItems = async (req, res) => {
     let from = req.query.from || 0;
     from = Number(from);
+    const count = await AthletesModel.estimatedDocumentCount();
+
 
     await AthletesModel.find({})
         .skip(from)
@@ -25,9 +27,8 @@ const getItems = async (req, res) => {
         .exec(
             (err, athlete) => {
                 if (err) return  response.error(res, res,'error loandig  Athlete', 500, err);
-                AthletesModel.estimatedDocumentCount({}, 
-                    (count) => response.success(res, res, 'load completed', 200, athlete, count )
-                )
+             response.success(res, res, 'load completed', 200, athlete, count )
+             
 
             });
 };
@@ -40,11 +41,21 @@ const getItems = async (req, res) => {
 const createItem = async (req, res) => {
 
     const { body } = req;
+    const ContactModel = new AthletesModel({
+        id: body._id,
+        Names: body.Names,
+        SureNames: body.SureNames,
+        neighborhood: body.neighborhood,
+        Address: body.Address,
+        Phone: body.Phone,
+        occupation: body.occupation,
+        email: body.email,
+    
+    });
     const Athletes = new AthletesModel({
-        _id: body._id,
+        id: body._id,
         age: body.age,
         IdContact: body.IdContact,
-        IdContact2: body.IdContact2,
         ailments: body.ailments,
         medicines: body.medicines,
         allergies: body.allergies,
@@ -56,9 +67,62 @@ const createItem = async (req, res) => {
         weight: body.weight,
         state: body.state,
     });
-    SavingOnDB(Athletes)
+
+
+    promise.all( SavingOnDB(Athletes), SavingOnDB(Athletes), )
         .then(resp => response.success(res, res, 'athlete was stored Safely', 201, resp))
         .catch((e) => response.error(res, res,'error storeding peopel', 500, e))
+};
+
+/**
+* create new register 
+* @param {*} req 
+* @param {*} res 
+*/
+const createcontact = async (req, res) => {
+
+    const { body } = req;
+    const Contact = new ContactModel({
+        id: body.IdContacto,
+        Names: body.Names,
+        SureNames: body.SureNames,
+        neighborhood: body.neighborhood,
+        Address: body.Address,
+        Phone: body.Phone,
+        occupation: body.occupation,
+        email: body.email,
+    
+    });
+
+ SavingOnDB(Contact)
+        .then(resp => response.success(res, res, 'athlete was stored Safely', 201, resp))
+        .catch((e) => response.error(res, res,'error storeding peopel', 500, e))
+};
+/**
+ * update a existing record 
+ * @param {*} req 
+ * @param {*} res 
+ */
+
+ const updatecontact = async (req, res) => {
+
+    const id = req.params.id;
+    const { body } = req;
+    const Contact = new ContactModel({
+        id: body.IdContacto,
+        Names: body.Names,
+        SureNames: body.SureNames,
+        neighborhood: body.neighborhood,
+        Address: body.Address,
+        Phone: body.Phone,
+        occupation: body.occupation,
+        email: body.email,
+    
+    });
+    Contact._id = id;
+    UpdatingOnDB(id, ContactModel, Contact)
+        .then(resp =>  response.success(req, res, 'athlete was updated Safely', 200, resp))
+        .catch((e) =>  response.error(req, res,'error Updating athlete', 500, e))
 };
 
 /**
@@ -72,7 +136,7 @@ const updateItem = async (req, res) => {
     const id = req.params.id;
     const { body } = req;
     const Athlete = new AthletesModel({
-        _id: body._id,
+
         age: body.age,
         IdContact: body.IdContact,
         IdContact2: body.IdContact2,
@@ -87,6 +151,8 @@ const updateItem = async (req, res) => {
         weight: body.weight,
         state: body.state,
     });
+    Athlete._id = id;
+    Athlete.id = id;
 
     UpdatingOnDB(id, AthletesModel, Athlete)
         .then(resp =>  response.success(req, res, 'athlete was updated Safely', 200, resp))
@@ -97,6 +163,8 @@ const updateItem = async (req, res) => {
 module.exports = {
     getItems,
     createItem,
-    updateItem
+    updateItem,
+    createcontact,
+    updatecontact
 
 }

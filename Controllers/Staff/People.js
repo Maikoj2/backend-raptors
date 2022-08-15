@@ -13,6 +13,8 @@ const getItems = async (req, res) => {
 
     let from = req.query.from || 0;
     from = Number(from);
+    const count = await PeopleModel.estimatedDocumentCount();
+
 
     await PeopleModel.find({})
         .skip(from)
@@ -20,9 +22,8 @@ const getItems = async (req, res) => {
         .exec(
             (err, peoples) => {
                 if (err) response.error(res, res, 'error loandig data for people', 500, err);
-                PeopleModel.estimatedDocumentCount({},
-                    (count) => response.success(res, res, 'load completed', 200, peoples, count)
-                )
+                response.success(res, res, 'load completed', 200, peoples, count )
+
             });
 };
 /**
@@ -73,7 +74,6 @@ const updateItem = async (req, res) => {
     const id_user = req.user._id;
     const People = new PeopleModel({
         IdType: body.IdType,
-        id: body._id,
         Names: body.Names,
         SureNames: body.SureNames,
         Gender: body.Gender,
@@ -90,6 +90,8 @@ const updateItem = async (req, res) => {
         user: id_user
 
     });
+    People._id = id;
+    People.id = id;
 
     UpdatingOnDB(id, PeopleModel, People)
         .then(resp => response.success(req, res, 'people was updated Safely', 200, resp))

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const uniquevallidator = require('mongoose-unique-validator');
 const schema = mongoose.Schema;
+const  mongooseDelete = require('mongoose-delete'); 
 
 
 const TeacherSchema = new schema(
@@ -28,5 +29,6 @@ const TeacherSchema = new schema(
 );
 
 TeacherSchema.plugin(uniquevallidator, { message: '{PATH} must be unique' })
+TeacherSchema.plugin(mongooseDelete, {overrideMethods: 'all'})
 
 module.exports = mongoose.model('Teachers', TeacherSchema);
