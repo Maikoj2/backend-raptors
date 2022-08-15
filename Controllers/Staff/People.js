@@ -1,6 +1,7 @@
-const { saveRegister } = require('../../helpers/SavingOnDB');
-const UpdateRegister = require('../../helpers/UpdatingOnDB');
+
 const { PeopleModel } = require('../../models')
+const { response, UpdatingOnDB, SavingOnDB } = require('../../helpers');
+
 
 /**
  * get all register 
@@ -17,25 +18,11 @@ const getItems = async (req, res) => {
         .skip(from)
         .limit(5)
         .exec(
-            (err, people) => {
-                if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        message: 'Error loanding People',
-                        erros: err
-                    });
-                }
-                PeopleModel.estimatedDocumentCount({}, (err, count) => {
-
-                    res.status(200).json({
-                        ok: true,
-                        people: people,
-                        total: count
-                    });
-
-                })
-
-
+            (err, peoples) => {
+                if (err) response.error(res, res, 'error loandig data for people', 500, err);
+                PeopleModel.estimatedDocumentCount({},
+                    (count) => response.success(res, res, 'load completed', 200, peoples, count)
+                )
             });
 };
 /**
@@ -49,7 +36,7 @@ const createItem = async (req, res) => {
     const id_user = req.user._id;
 
     const People = new PeopleModel({
-        _id: body._id,
+        id: body._id,
         IdType: body.IdType,
         Names: body.Names,
         SureNames: body.SureNames,
@@ -66,22 +53,9 @@ const createItem = async (req, res) => {
         role: body.role,
         user: id_user
     });
-     await saveRegister(People)
-        .then(resp => {
-            res.status(200).json({
-                ok: true,
-                message: 'people was stored Safely',
-                People: resp
-            });
-        })
-        .catch((e) => {
-            console.log(e)
-            return res.status(500).json({
-                ok: false,
-                message: 'Error storeding peopel',
-                erros: e
-            });
-        })
+    await SavingOnDB(People)
+        .then(resp => response.success(res, res, 'people was stored Safely', 201, resp))
+        .catch((e) => response.error(res, res, 'error storeding peopel', 500, e))
 
 
 };
@@ -99,7 +73,7 @@ const updateItem = async (req, res) => {
     const id_user = req.user._id;
     const People = new PeopleModel({
         IdType: body.IdType,
-        _id: body._id,
+        id: body._id,
         Names: body.Names,
         SureNames: body.SureNames,
         Gender: body.Gender,
@@ -117,21 +91,9 @@ const updateItem = async (req, res) => {
 
     });
 
-    UpdateRegister(id, PeopleModel, People)
-        .then(resp => {
-            res.status(200).json({
-                ok: true,
-                message: 'teacher was updated Safely',
-                persona: resp
-            })
-        }
-        ).catch((e) => {
-            return res.status(500).json({
-                ok: false,
-                message: 'Error Updating Teacher',
-                erros: e
-            });
-        })
+    UpdatingOnDB(id, PeopleModel, People)
+        .then(resp => response.success(req, res, 'people was updated Safely', 200, resp))
+        .catch((e) => response.error(req, res, 'error Updating people', 500, e))
 };
 
 module.exports = {

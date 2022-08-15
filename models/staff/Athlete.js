@@ -7,7 +7,7 @@ const rolesValidos = {
 } 
 
 const AthleteSchema = new schema({
-    _id:    { type: String , required: false, unique: true, ref: 'peoples'},
+    id:    { type: String , required: false, unique: true, ref: 'peoples'},
     age: { type: String, required: true },
     IdContact: { type: String, ref: 'contactos' ,required: true},
     IdContact2: { type: String,ref: 'contactos', required: true },
@@ -24,9 +24,8 @@ const AthleteSchema = new schema({
 },
 { 
     timestamps: true,
-    versionKey: false,
+    
     collection: 'athletes',
-    _id: false 
 });
 
 AthleteSchema.plugin(uniquevallidator, { message: '{PATH} must be unique ' })

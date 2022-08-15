@@ -1,10 +1,6 @@
 
-const { saveRegister } = require("../../helpers/SavingOnDB");
-const UpdateRegister = require("../../helpers/UpdatingOnDB");
 const { AthletesModel } = require("../../models");
-
-
-
+const { response, UpdatingOnDB,  SavingOnDB } = require('../../helpers');
 
 /**
  * get a data
@@ -18,40 +14,23 @@ const getItems = async (req, res) => {
     await AthletesModel.find({})
         .skip(from)
         .populate(
-            [
-                {
-                    path: '_id',
-                    populate: [{
-                        path: 'user',
-                        select: 'Nombre email'
-                    }]
-                }
-            ]
-        )
+            [{
+                path: '_id',
+                populate: [{
+                    path: 'user',
+                    select: 'Nombre email'
+                }]
+            }])
         .limit(5)
         .exec(
-            (err, user) => {
-                if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        message: 'Error loandig  Athlete',
-                        erros: err
-                    });
-                }
-                AthletesModel.estimatedDocumentCount({}, (err, count) => {
-
-                    res.status(200).json({
-                        ok: true,
-                        Athlete: user,
-                        total: count
-                    });
-
-                })
-
+            (err, athlete) => {
+                if (err) return  response.error(res, res,'error loandig  Athlete', 500, err);
+                AthletesModel.estimatedDocumentCount({}, 
+                    (count) => response.success(res, res, 'load completed', 200, athlete, count )
+                )
 
             });
 };
-
 
 /**
 * create new register 
@@ -77,24 +56,9 @@ const createItem = async (req, res) => {
         weight: body.weight,
         state: body.state,
     });
-    saveRegister(Athletes)
-        .then(resp => {
-            res.status(200).json({
-                ok: true,
-                message: 'athlete was stored Safely',
-                People: resp
-            });
-        })
-        .catch((e) => {
-            console.log(e)
-            return res.status(500).json({
-                ok: false,
-                message: 'Error storeding Athlete',
-                erros: e
-            });
-        })
-
-
+    SavingOnDB(Athletes)
+        .then(resp => response.success(res, res, 'athlete was stored Safely', 201, resp))
+        .catch((e) => response.error(res, res,'error storeding peopel', 500, e))
 };
 
 /**
@@ -103,7 +67,7 @@ const createItem = async (req, res) => {
  * @param {*} res 
  */
 
- const updateItem = async (req, res) => {
+const updateItem = async (req, res) => {
 
     const id = req.params.id;
     const { body } = req;
@@ -124,21 +88,9 @@ const createItem = async (req, res) => {
         state: body.state,
     });
 
-    UpdateRegister(id, AthletesModel, Athlete)
-        .then(resp => {
-            res.status(200).json({
-                ok: true,
-                message: 'Athlete was updated Safely',
-                profesor: resp,
-            })
-        }
-        ).catch((e) => {
-            return res.status(500).json({
-                ok: false,
-                message: 'Error Updating Athlete',
-                erros: e
-            });
-        })
+    UpdatingOnDB(id, AthletesModel, Athlete)
+        .then(resp =>  response.success(req, res, 'athlete was updated Safely', 200, resp))
+        .catch((e) =>  response.error(req, res,'error Updating athlete', 500, e))
 };
 
 

@@ -13,6 +13,4 @@ function saveRegister(data) {
 
 
 }
-module.exports ={
-    saveRegister
-}
+module.exports = saveRegister

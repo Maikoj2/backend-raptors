@@ -10,6 +10,9 @@ const  rolesValidos = {
 
 const  userSchema = new schema(
     {
+        id: {
+            type: String,
+        },
 
         Name: 
         { 
@@ -43,7 +46,6 @@ const  userSchema = new schema(
     }, 
     {
         timestamps: true,
-        versionKey: false,
         collection: 'Users' 
     }
 );

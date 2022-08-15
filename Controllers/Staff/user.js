@@ -1,6 +1,7 @@
 const { UserModel } = require('../../models')
 const bcrypt = require('bcryptjs');
-
+const { response } = require('../../helpers');
+const user = require('../../models/staff/user');
 
 /**
  * get a  list 
@@ -18,20 +19,10 @@ const getItems = async (req, res) => {
         .exec(
             (err, user) => {
                 if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        mensaje: 'Error cargando usuraio',
-                        erros: err
-                    });
+                    response.error(res, res,'error loandig data for User', 500, err);
                 }
                 UserModel.estimatedDocumentCount({}, (err, count) => {
-
-                    res.status(200).json({
-                        ok: true,
-                        users: user,
-                        total: count
-                    });
-
+                    response.success(res, res, 'load completed', 200, user, count )
                 })
 
 
@@ -53,27 +44,20 @@ const getItem = (req, res) => { };
 const createItem = async (req, res) => {
     const { body } = req;
 
-    user = new UserModel({
+    const user = new UserModel({
+        id: '',
         Name: body.Name,
         email: body.email,
         password: bcrypt.hashSync(body.password, 10),
         img: body.img,
         role: body.role
     });
+    user.id = user._id
     await user.save((err, userSaved) => {
         if (err) {
-            return res.status(400).json({
-                ok: false,
-                mensage: 'Error create user',
-                err: err
-            });
+            response.error(res, res,'error create user', 500, err);
         }
-        res.status(201).json({
-            ok: true,
-            body: userSaved,
-            // usertoken: req.usuario
-        });
-
+        response.success(res, res, 'user created successfully', 201, userSaved)
     });
 
 
@@ -85,43 +69,23 @@ const createItem = async (req, res) => {
  */
 
 const updateItem = async (req, res) => {
-
     const id = req.params.id;
     const body = req.body;
-
     await UserModel.findById(id, (err, user) => {
 
+        (err) && response.error(req, res,'error searching for user', 500, err);
 
-        if (err) return res.status(500).json({
-            ok: false,
-            mensaje: 'Error al buscar usuario',
-            erros: err
-        });
-
-
-        if (!user) return res.status(400).json({
-            ok: false,
-            message: 'the user ' + id + ' no found',
-            erros: { message: `the user don't exist ` }
-        });
-
-
+        (!user) && response.error(req, res,`the user ${ id } no found`, 404, `the user not exist`);
+        
         user.Name = body.Name;
         user.email = body.email;
         user.role = body.role;
 
         user.save((err, savededUser) => {
 
-            if (err) return res.status(400).json({
-                ok: false,
-                messege: 'Error upduting User',
-                erros: err
-            });
+            if (err)response.error(req, res,'error upduting User', 500, err); 
             savededUser.password = '<3'
-            res.status(200).json({
-                ok: true,
-                user: savededUser
-            });
+            response.success(req, res, 'user updated successfully', 200, savededUser)
 
         });
 
@@ -140,33 +104,14 @@ const deleteItem = async (req, res) => {
     await UserModel.deleteOne({ _id: id }, (err, deletedUser) => {
 
 
-        if (err) return res.status(500).json({
-            ok: false,
-            mesagge: 'Error deleting user',
-            erros: err
-        });
-        if (!deletedUser) return res.status(400).json({
-            ok: false,
-            message: 'the user ' + id + ' no found',
-            erros: { message: `the user don't exist ` }
-        });
-
-        res.status(200).json({
-            ok: true,
-            message: 'User udateded successfully',
-            user: deletedUser
-        });
+        if (err) response.error(req, res,'error deleting  user', 500, err);
+        if (!deletedUser) response.error(req, res,`the user ${ id } no found`, 404, `the user not exist`);
+        response.success(req, res, 'user deleted successfully', 200, savededUser)
 
 
 
     });
 };
-
-
-
-
-
-
 
 module.exports = {
     getItems,

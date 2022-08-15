@@ -1,7 +1,5 @@
 const { TeacherModel, PeopleModel } = require('../../models')
-const { saveRegister } = require('../../helpers/SavingOnDB');
-const UpdateRegister = require('../../helpers/UpdatingOnDB');
-
+const { response , UpdatingOnDB, SavingOnDB } = require('../../helpers');
 
 
 /**
@@ -15,34 +13,23 @@ const getItems = async (req, res) => {
 
     TeacherModel.find({})
         .skip(from)
-        .populate(
-            [
-                {
-                    path: '_id',
-                    populate: [{
-                        path: 'user',
-                        select: 'Nombre email'
-                    }]
-                },
-                {
-                    path: 'id_BaseSalary'
-                }
-            ]
-        )
+        .populate([{
+            path: 'id',
+            populate: [{
+                path: 'user',
+                select: 'Nombre email'
+            }]
+        },
+        // {
+        //     // path: 'id_BaseSalary'
+        // }
+    ])
         .limit(5)
-        .exec((err, reg) => {
-            if (err) return res.status(500).json({
-                ok: false,
-                mensaje: 'Error cargando usuraio',
-                erros: err
-            });
-            TeacherModel.estimatedDocumentCount({}, (err, count) => {
-                res.status(200).json({
-                    ok: true,
-                    register: reg,
-                    total: count
-                });
-            });
+        .exec((err, teachers) => {
+            if (err) response.error(res, res, 'error loandig data for teacher', 500, err);
+            TeacherModel.estimatedDocumentCount({},
+                (count) => response.success(res, res, 'load completed', 200, teachers, count)
+            )
         });
 };
 
@@ -51,7 +38,7 @@ const getItems = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const getItem = (req, res) => { };
+// const getItem = (req, res) => { };
 
 /**
  * create new register 
@@ -61,31 +48,15 @@ const getItem = (req, res) => { };
 const createItem = async (req, res) => {
 
     const { body } = req;
-    const id_user = req.user._id;
-
     const Teacher = new TeacherModel({
-        _id: body._id,
+        id: body._id,
         id_BaseSalary: body.id_BaseSalary,
         profession: body.profession
     });
 
-    saveRegister(Teacher)
-        .then(resp => {
-            res.status(200).json({
-                ok: true,
-                message: 'teacher was stored Safely',
-                People: resp[1],
-                Teacher: resp[0],
-            });
-        })
-        .catch((e) => {
-            console.log(e)
-            return res.status(500).json({
-                ok: false,
-                message: 'Error storeding Teacher',
-                erros: e
-            });
-        })
+    SavingOnDB(Teacher)
+        .then(resp => response.success(res, res, 'teacher was stored Safely', 201, resp))
+        .catch((e) => response.error(res, res, 'error storeding teacher', 500, e))
 
 
 };
@@ -99,30 +70,14 @@ const updateItem = async (req, res) => {
 
     const id = req.params.id;
     const { body } = req;
-    const id_user = req.user._id;
     const Teacher = new TeacherModel({
         _id: body._id,
         id_BaseSalary: body.id_BaseSalary,
         profession: body.profession
     });
-
-
-
-    UpdateRegister(id, TeacherModel, Teacher)
-        .then(resp => {
-            res.status(200).json({
-                ok: true,
-                message: 'teacher was updated Safely',
-                profesor: resp,
-            })
-        }
-        ).catch((e) => {
-            return res.status(500).json({
-                ok: false,
-                message: 'Error Updating Teacher',
-                erros: e
-            });
-        })
+    UpdatingOnDB(id, TeacherModel, Teacher)
+        .then(resp => response.success(req, res, 'teacher was updated Safely', 200, resp)
+        ).catch((e) => response.error(req, res, 'error Updating Teacher', 500, e))
 };
 
 /**
@@ -130,16 +85,16 @@ const updateItem = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const deleteItem = async (req, res) => {
-    /**TODO
-     * create rute class an implemente this deletd
-     */
-};
+// const deleteItem = async (req, res) => {
+//     /**TODO
+//      * create rute class an implemente this deletd
+//      */
+// };
 
 module.exports = {
     getItems,
-    getItem,
+    // getItem,
     createItem,
     updateItem,
-    deleteItem
+    // deleteItem
 }

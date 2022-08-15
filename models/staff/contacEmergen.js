@@ -3,7 +3,7 @@ var uniquevallidator = require('mongoose-unique-validator');
 var schema = mongoose.Schema;
 var ContactoSchema = new schema({
 
-    _id:    { type: String , required: true, unique: true},
+    id:    { type: String , required: true, unique: true},
     Nombre: { type: String, required: [true, 'el nombre es necesario'] },
     Apellidos: { type: String, required: [true, 'el nombre es necesario'] },
     Barrio: { type: String, required: [true, 'el nombre es necesario'] },

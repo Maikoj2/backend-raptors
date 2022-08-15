@@ -1,7 +1,7 @@
 const { UserModel } = require('../../models')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
-const SEED = require('../../config/config').SEED;
+const { response } = require('../../helpers');
 
 /**
  * get a  list 
@@ -9,32 +9,15 @@ const SEED = require('../../config/config').SEED;
  * @param {*} res 
  */
 const Login = async (req, res) => {
+    const SEED = process.env.SEED
 
     const { body } = req;
     await UserModel.findOne({ email: body.email }, (err, userdb) => {
-        if (err) return res.status(500).json({
-            ok: false,
-            message: 'Error searching user',
-            erros: err
-        });
-
-        if (!userdb) return res.status(500).json({
-            ok: false,
-            message: 'wrong credentials',
-            erros: err
-        });
-
-        if (!bcrypt.compareSync(body.password, userdb.password)) {
-            return res.status(500).json({
-                ok: false,
-                message: 'wrong credentials',
-                erros: err
-            });
-        }
+        if (err) return response.error(res, res, 'Response.error searching user', 500, err);
+        if ( !userdb || !bcrypt.compareSync(body.password, userdb.password)) return response.error(req, res, 'wrong credentials', 401, '   ');
         userdb.password = ':)'
         // crear token
         const token = jwt.sign({ usuario: userdb }, SEED, { expiresIn: 14400 }) //4
-
         res.status(201).json({
             ok: true,
             usuario: userdb,

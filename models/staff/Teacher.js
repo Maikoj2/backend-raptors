@@ -5,7 +5,7 @@ const schema = mongoose.Schema;
 
 const TeacherSchema = new schema(
     {
-        _id: {
+        id: {
             type: String,
             ref: 'peoples',
         },
@@ -22,8 +22,7 @@ const TeacherSchema = new schema(
     {
         collection: 'Teachers',
         timestamps: true,
-        _id: false ,
-        versionKey: false,
+      
 
     }
 );

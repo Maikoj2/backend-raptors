@@ -11,7 +11,7 @@ const validRole = {
 }
 
 const PeopleSchema = new schema({
-    _id: {
+    id: {
         type: String,
         required: true,
         unique: [true, 'the id is requered']
@@ -88,8 +88,7 @@ const PeopleSchema = new schema({
 {
     collection: 'peoples',
     timestamps: true,
-    versionKey: false,
-    _id: false 
+   
     });
 PeopleSchema.plugin(uniquevallidator, { message: '{PATH} must be unique' });
 

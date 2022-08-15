@@ -6,7 +6,7 @@ const { getItems, createItem, updateItem, deleteItem } = require('../../Controll
 /**
  * get a list of all users 
  */
-app.get('/', autenticacion.verificatoken, getItems);
+app.get('/', getItems);
 
 /**
  * Create a new user on database 

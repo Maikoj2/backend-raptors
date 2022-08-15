@@ -8,7 +8,7 @@ var clase = require('../../models/clases/clase')
 var diciplina = require('../../models/clases/diciplina')
 
 //  rutas
-app.get('/todo/:busqueda', (req, res, next) => {
+app.get('/all/:search', (req, res, next) => {
     var busqueda = req.params.busqueda;
     var regex = new RegExp(busqueda, 'i')
     var desde = req.query.desde || 0;

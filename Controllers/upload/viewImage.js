@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-
+const { response } = require('../../helpers');
 
 /**
  * get a data image
@@ -11,15 +11,9 @@ const fs = require('fs');
 
     const  img = req.params.img;
     const  typeCollection = req.params.tipo;
-    const  CollectionsValide = ['deportista', 'User', 'personal']
-    if (CollectionsValide.indexOf(typeCollection) < 0) {
-        return res.status(400).json({
-            ok: false,
-            messge: 'Collection invalide',
-            erros: { message: ' the collections valides are: ' + CollectionsValide.join(', ') }
-        });
-
-    }
+    const CollectionsValide = ['Stuff', 'User']
+    if (CollectionsValide.indexOf(typeCollection) < 0) 
+        return response.error(req, res, 'Collection invalide', 400, `valid Extensions  are: ${CollectionsValide.join(', ')}`);
 
    const  pathimage = path.resolve(__dirname, `../../uploads/${typeCollection}/${img}`)
     if (fs.existsSync(pathimage)) {
