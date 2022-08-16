@@ -1,151 +1,26 @@
-var expres = require('express')
-var app = expres();
-var Registro = require('../../models/discipline/Registro');
-var Clase = require('../../models/discipline/clase');
-var autenticacion = require('../../middelware/autenticacion');
-const clase = require('../../models/discipline/clase');
+const expres = require('express')
+const app = expres();
+const Registro = require('../../models/discipline/Registro');
+const Clase = require('../../models/discipline/class');
+const autenticacion = require('../../middelware/autenticacion');
+const clase = require('../../models/discipline/class');
+const { getItems, createItem, updateItem } = require('../../Controllers/discipline/class');
 
 
 
 //  rutas
-app.get('/', (req, res, next) => {
-
-    var desde = req.query.desde || 0;
-    desde = Number(desde);
-    Clase.find({},)
-        .skip(desde)
-        .populate('id_diciplina', ' NombreDiciplina ')
-        .populate('id_profesor', ' Nombres Apellidos email')
-        .populate('Usuario', 'Nombre email'
-        )
-        .limit(25)
-        .exec(
-            (err, prestamo) => {
-                if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        mensaje: 'Error cargando clase',
-                        erros: err
-                    });
-                }
-                Clase.estimatedDocumentCount({}, (err, conteo) => {
-                    res.status(200).json({
-                        ok: true,
-                        clase: prestamo,
-                        total: conteo
-                    });
-
-
-                })
-              
-
-            });
-
-
-
-
-});
+app.get('/', getItems);
 
 // ==============================
 // ingresar Clase nuevo 
 // ==============================
-app.post('/', autenticacion.verificatoken,
-    (req, res) => {
-        var body = req.body;
-        var id_usuario = req.usuario._id;
-        var clase = new Clase({
-            Nombre: body.nombre,
-            id_diciplina: body.idDciplina,
-            id_Profe: body.idProfe,
-            FechaInicio: body.FechaI,
-            FechaFin: body.FechaF,
-            Horario: body.Horario,
-            Lugar: body.Lugar,
-            HoraInicio: body.HoraInicio,
-            HoraFin: body.HoraFin,
-            Usuario: id_usuario
-
-        });
-
-        clase.save((err, ClaseGuardado) => {
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    mensaje: 'Error crear Clase',
-                    erros: err
-                });
-            }
-            res.status(201).json({
-                ok: true,
-                disciplina: ClaseGuardado
-            });
-
-        });
-
-
-
-    });
+app.post('/', autenticacion.verificatoken,createItem);
 
 // ==============================
 // actualizar  los Personas
 // ==============================
 
-app.put('/:id', autenticacion.verificatoken, (req, res) => {
-
-    var id = req.params.id;
-    var body = req.body;
-    var id_usuario = req.usuario._id;
-
-    Clase.findById(id, (err, clase) => {
-
- 
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'Error al buscar clase',
-                erros: err
-            });
-        }
-
-        if (!clase) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: 'clase con ' + id + ' no existe',
-                erros: { message: 'no existe el clase con ese id ' }
-            });
-        }
-       
-        clase.Nombre =  body.nombre,
-            clase.id_diciplina =  body.idDciplina,
-            clase.id_Profe =  body.idProfe,
-            clase.FechaInicio =  body.FechaI,
-            clase.FechaFin =  body.FechaF,
-            clase.Horario =  body.Horario,
-            clase.Lugar =  body.Lugar,
-            clase.HoraInicio =  body.HoraInicio,
-            clase.HoraFin =  body.HoraFin,
-            clase.Usuario =  id_usuario
-
-        clase.save((err, claseGuardado) => {
-            
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    mensaje: 'Error actualizar usuraio',
-                    erros: err
-                });
-            }
-            claseGuardado.password='<3'
-            res.status(200).json({
-                ok: true,
-                clase: claseGuardado
-            });
-
-        });
-
-    });
-
-});
+app.put('/:id', autenticacion.verificatoken, updateItem);
 
 
 
@@ -155,8 +30,8 @@ app.put('/:id', autenticacion.verificatoken, (req, res) => {
 
 app.delete('/:id', autenticacion.verificatoken, (req, res) => {
 
-    var id = req.params.id;
-    var data;
+    const id = req.params.id;
+    let data = '';
 
     Registro.findOne({ id_clase: id }, (err, claseborrado) => {
 

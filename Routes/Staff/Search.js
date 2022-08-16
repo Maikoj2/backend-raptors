@@ -4,7 +4,7 @@ var Usuario = require('../../models/staff/user')
 var personal = require('../../models/staff/Teacher')
 var deportista = require('../../models/staff/Athlete')
 var personas = require('../../models/staff/people')
-var clase = require('../../models/discipline/clase')
+var clase = require('../../models/discipline/class')
 var diciplina = require('../../models/discipline/discipline')
 
 //  rutas

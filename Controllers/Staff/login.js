@@ -12,8 +12,7 @@ const Login = async (req, res) => {
     const SEED = process.env.SEED
 
     const { body } = req;
-    await UserModel.findOne({ email: body.email }, (err, userdb) => {
-        if (err) return response.error(res, res, 'Response.error searching user', 500, err);
+    await UserModel.findOne({ email: body.email }).then(userdb => {
         if ( !userdb || !bcrypt.compareSync(body.password, userdb.password)) return response.error(req, res, 'wrong credentials', 401, '   ');
         userdb.password = ':)'
         // crear token
