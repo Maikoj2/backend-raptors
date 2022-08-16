@@ -1,6 +1,6 @@
 var expres = require('express')
 var app = expres();
-var pagomensual = require('../../models/facturas/mensualidad');
+var pagomensual = require('../../models/facturas/MonthlyPayment');
 var autenticacion = require('../../middelware/autenticacion')
 
 

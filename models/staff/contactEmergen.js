@@ -4,7 +4,7 @@ var schema = mongoose.Schema;
 const  mongooseDelete = require('mongoose-delete'); 
 var ContactSchema = new schema({
 
-    id:    { type: String , required: true, unique: true},
+    id:    { type: String , required: true, unique: false },
     Names: { type: String, required: [true, 'the name is necessary'] },
     SureNames: { type: String, required: [true, 'the surename is necessary'] },
     neighborhood: { type: String, required: [true, 'the neighborhood is necessary'] },

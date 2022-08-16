@@ -10,8 +10,7 @@ const rolesValidos = {
 const AthleteSchema = new schema({
     id:    { type: String , required: false, unique: true, ref: 'peoples'},
     age: { type: String, required: true },
-    IdContact: { type: String, ref: 'contactos' ,required: true},
-    IdContact2: { type: String,ref: 'contactos', required: true },
+    IdContact: { type: String, ref: 'emergencecontacts' ,required: false},
     ailments: { type: String ,required: false},
     medicines: { type: String ,required: false},
     allergies: { type: String ,required: false},
@@ -31,4 +30,4 @@ const AthleteSchema = new schema({
 AthleteSchema.plugin(uniquevallidator, { message: '{PATH} must be unique ' })
 AthleteSchema.plugin(mongooseDelete, {overrideMethods: 'all'})
 
-module.exports = mongoose.model('athlete', AthleteSchema);
+module.exports = mongoose.model('athletes', AthleteSchema);

@@ -4,7 +4,7 @@ var app = expres();
 var Deportista = require('../../models/staff/Athlete');
 var Persona = require('../../models/staff/people');
 var contatoEmergencia = require('../../models/staff/contactEmergen');
-var Registro = require('../../models/discipline/Registro');
+var Registro = require('../../models/discipline/signUpClass');
 const { getItems, createItem, updateItem, createcontact, updatecontact } = require('../../Controllers/Staff/Athlete');
 
 
@@ -24,10 +24,6 @@ app.put('/contact/:id', autenticacion.verificatoken, updatecontact );
  * Create a new user on database 
  */
 app.post('/', autenticacion.verificatoken, createItem);
-/**
- * Create a new contact on database 
- */
-app.post('/contact', autenticacion.verificatoken, createcontact);
 
 /**
  * delete a user by id 

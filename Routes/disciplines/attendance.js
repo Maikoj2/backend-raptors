@@ -3,8 +3,8 @@ var app = expres();
 var Asistencia = require('../../models/discipline/asistencia');
 var autenticacion = require('../../middelware/autenticacion');
 var Prestamo = require('../../models/facturas/Prestamos');
-var Registro = require('../../models/discipline/Registro');
-const mensualidad = require('../../models/facturas/mensualidad');
+var Registro = require('../../models/discipline/signUpClass');
+const mensualidad = require('../../models/facturas/MonthlyPayment');
 
 
 

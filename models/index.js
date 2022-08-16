@@ -6,6 +6,9 @@ const  models = {
     ContactModel: require('./staff/contactEmergen'),
     DisciplineModel: require('./discipline/Discipline'),
     ClassModel: require('./discipline/class'),
+    SignUpClassModel: require('./discipline/signUpClass'),
+    DaylypayModel: require('./facturas/DailyPayment'),
+    MonthlypayModel: require('./facturas/MonthlyPayment'),
 
 }
 module.exports = models

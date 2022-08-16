@@ -1,6 +1,6 @@
 const expres = require('express')
 const app = expres();
-const Registro = require('../../models/discipline/Registro');
+const Registro = require('../../models/discipline/signUpClass');
 const Clase = require('../../models/discipline/class');
 const autenticacion = require('../../middelware/autenticacion');
 const clase = require('../../models/discipline/class');

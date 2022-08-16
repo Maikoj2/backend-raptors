@@ -1,6 +1,6 @@
 
-const { AthletesModel,ContactModel } = require("../../models");
-const { response, UpdatingOnDB,  SavingOnDB } = require('../../helpers');
+const { AthletesModel, ContactModel } = require("../../models");
+const { response, UpdatingOnDB, SavingOnDB } = require('../../helpers');
 
 /**
  * get a data
@@ -17,18 +17,19 @@ const getItems = async (req, res) => {
         .skip(from)
         .populate(
             [{
-                path: '_id',
+                path: 'id',
                 populate: [{
                     path: 'user',
                     select: 'Nombre email'
                 }]
-            }])
+            },{ path: 'IdContact' }
+        ])
         .limit(5)
         .exec(
             (err, athlete) => {
-                if (err) return  response.error(res, res,'error loandig  Athlete', 500, err);
-             response.success(res, res, 'load completed', 200, athlete, count )
-             
+                if (err) return response.error(res, res, 'error loandig  Athlete', 500, err);
+                response.success(res, res, 'load completed', 200, athlete, count)
+
 
             });
 };
@@ -41,8 +42,8 @@ const getItems = async (req, res) => {
 const createItem = async (req, res) => {
 
     const { body } = req;
-    const ContactModel = new AthletesModel({
-        id: body._id,
+    const Contact = new ContactModel({
+        id: body.IdContact,
         Names: body.Names,
         SureNames: body.SureNames,
         neighborhood: body.neighborhood,
@@ -50,12 +51,12 @@ const createItem = async (req, res) => {
         Phone: body.Phone,
         occupation: body.occupation,
         email: body.email,
-    
+
     });
     const Athletes = new AthletesModel({
         id: body._id,
         age: body.age,
-        IdContact: body.IdContact,
+        IdContact: Contact._id,
         ailments: body.ailments,
         medicines: body.medicines,
         allergies: body.allergies,
@@ -68,10 +69,12 @@ const createItem = async (req, res) => {
         state: body.state,
     });
 
-
-    promise.all( SavingOnDB(Athletes), SavingOnDB(Athletes), )
+    Promise.all([
+        SavingOnDB(Athletes),
+        SavingOnDB(Contact)
+    ])
         .then(resp => response.success(res, res, 'athlete was stored Safely', 201, resp))
-        .catch((e) => response.error(res, res,'error storeding peopel', 500, e))
+        .catch((e) => response.error(res, res, 'error storeding peopel', 500, e))
 };
 
 /**
@@ -91,12 +94,12 @@ const createcontact = async (req, res) => {
         Phone: body.Phone,
         occupation: body.occupation,
         email: body.email,
-    
+
     });
 
- SavingOnDB(Contact)
+    SavingOnDB(Contact)
         .then(resp => response.success(res, res, 'athlete was stored Safely', 201, resp))
-        .catch((e) => response.error(res, res,'error storeding peopel', 500, e))
+        .catch((e) => response.error(res, res, 'error storeding peopel', 500, e))
 };
 /**
  * update a existing record 
@@ -104,7 +107,7 @@ const createcontact = async (req, res) => {
  * @param {*} res 
  */
 
- const updatecontact = async (req, res) => {
+const updatecontact = async (req, res) => {
 
     const id = req.params.id;
     const { body } = req;
@@ -117,12 +120,12 @@ const createcontact = async (req, res) => {
         Phone: body.Phone,
         occupation: body.occupation,
         email: body.email,
-    
+
     });
     Contact._id = id;
     UpdatingOnDB(id, ContactModel, Contact)
-        .then(resp =>  response.success(req, res, 'athlete was updated Safely', 200, resp))
-        .catch((e) =>  response.error(req, res,'error Updating athlete', 500, e))
+        .then(resp => response.success(req, res, 'athlete was updated Safely', 200, resp))
+        .catch((e) => response.error(req, res, 'error Updating athlete', 500, e))
 };
 
 /**
@@ -155,8 +158,8 @@ const updateItem = async (req, res) => {
     Athlete.id = id;
 
     UpdatingOnDB(id, AthletesModel, Athlete)
-        .then(resp =>  response.success(req, res, 'athlete was updated Safely', 200, resp))
-        .catch((e) =>  response.error(req, res,'error Updating athlete', 500, e))
+        .then(resp => response.success(req, res, 'athlete was updated Safely', 200, resp))
+        .catch((e) => response.error(req, res, 'error Updating athlete', 500, e))
 };
 
 
