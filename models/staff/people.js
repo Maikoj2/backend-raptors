@@ -1,15 +1,10 @@
-const { type } = require('express/lib/response');
+
 const mongoose = require('mongoose');
 const uniquevallidator = require('mongoose-unique-validator');
 const schema = mongoose.Schema;
 const  mongooseDelete = require('mongoose-delete'); 
 
 
-const validRole = {
-
-    values: ['USER_ROLE', 'TEACHER_ROLE'],
-    message: '{VALUE} the rol is no valid'
-}
 
 const PeopleSchema = new schema({
     id: {
@@ -35,7 +30,8 @@ const PeopleSchema = new schema({
     },
     neighborhood: {
         type: String,
-        required: [false]
+        required: [false],
+        default: ' '
     },
     Address: {
         type: String,
@@ -55,7 +51,8 @@ const PeopleSchema = new schema({
     },
     EPS: {
         type: String,
-        required: false
+        required: false,
+        default: ' '
     },
     img: { 
         type: String, 
@@ -83,7 +80,7 @@ const PeopleSchema = new schema({
         type: String,
         required: true,
         default: 'USER_ROLE',
-        enum: validRole
+
     }
 },
 {
@@ -93,5 +90,8 @@ const PeopleSchema = new schema({
     });
 PeopleSchema.plugin(uniquevallidator, { message: '{PATH} must be unique' });
 PeopleSchema.plugin(mongooseDelete, {overrideMethods: 'all'});
-
+PeopleSchema.methods.toJSON = function () {
+    const { __v, deleted, ...people } = this.toObject();
+    return people;
+}
 module.exports = mongoose.model('peoples', PeopleSchema);

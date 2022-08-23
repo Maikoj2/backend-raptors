@@ -2,7 +2,7 @@ const expres = require('express')
 const app = expres();
 const Registro = require('../../models/discipline/signUpClass');
 const Clase = require('../../models/discipline/class');
-const autenticacion = require('../../middelware/autenticacion');
+const autenticacion = require('../../middleware/autenticacion');
 const clase = require('../../models/discipline/class');
 const { getItems, createItem, updateItem } = require('../../Controllers/discipline/class');
 

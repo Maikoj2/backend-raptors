@@ -1,7 +1,7 @@
 var expres = require('express')
 var app = expres();
-var SueldoBase = require('../../models/nomina/sueldobase');
-var autenticacion = require('../../middelware/autenticacion');
+var SueldoBase = require('../../models/nomina/BaseSalary');
+var autenticacion = require('../../middleware/autenticacion');
 var Personal = require('../../models/staff/Teacher')
 
 
@@ -47,12 +47,12 @@ app.get('/', (req, res, next) => {
 app.post('/', autenticacion.verificatoken,
     (req, res) => {
         var body = req.body;
-        var id_usuario = req.usuario._id;
+        var id_usuario =req.user._id;
         var sueldobase = new SueldoBase({
-            Cargo: body.Cargo,
-            Sueldo_Base: body.Sueldo_Base,
-            Valor_Hora: body.Valor_Hora,
-            Usuario: id_usuario
+            position: body.Cargo,
+            BaseSalary: body.Sueldo_Base,
+            valuePerHour: body.Valor_Hora,
+            User: id_usuario
 
         });
 

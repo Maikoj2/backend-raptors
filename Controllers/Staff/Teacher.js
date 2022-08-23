@@ -1,5 +1,5 @@
 const { TeacherModel, PeopleModel } = require('../../models')
-const { response , UpdatingOnDB, SavingOnDB } = require('../../helpers');
+const { response, UpdatingOnDB, SavingOnDB, SearchingAllOnDB, Populate } = require('../../helpers');
 
 
 /**
@@ -8,30 +8,14 @@ const { response , UpdatingOnDB, SavingOnDB } = require('../../helpers');
  * @param {*} res 
  */
 const getItems = async (req, res) => {
-    let from = req.query.from || 0;
-    from = Number(from);
-    const count = await TeacherModel.estimatedDocumentCount();
-
-
-    TeacherModel.find({})
-        .skip(from)
-        .populate([{
-            path: 'id',
-            populate: [{
-                path: 'user',
-                select: 'Nombre email'
-            }]
-        },
-        // {
-        //     // path: 'id_BaseSalary'
-        // }
+    const { from = 0, limit = 5 } = req.query;
+    const query = { deleted: false }
+    await Promise.all([
+        TeacherModel.countDocuments(query),
+        SearchingAllOnDB(TeacherModel, Number(from), Number(limit), query, Populate.populateTeacher )
     ])
-        .limit(5)
-        .exec((err, teachers) => {
-            if (err) response.error(res, res, 'error loandig data for teacher', 500, err);
-            response.success(res, res, 'load completed', 200, teachers, count )
-
-        });
+        .then(([count, user]) => response.success(res, res, 'load completed', 200, user, count))
+        .catch((err) => response.error(res, res, 'error loandig data for teachers', 500, err))
 };
 
 /**
@@ -48,17 +32,27 @@ const getItems = async (req, res) => {
  */
 const createItem = async (req, res) => {
 
-    const { body } = req;
-    const Teacher = new TeacherModel({
-        id: body._id,
-        id_BaseSalary: body.id_BaseSalary,
-        profession: body.profession
-    });
+    const user = req.user._id;
+    const { id, IdType, Names, SureNames, Gender, neighborhood, Address, Phone,
+        occupation, email, EPS, img, DateofBirth, DepartamentBirth, MunicipeBirth, role,
+        id_BaseSalary, profession } = req.body;
 
+    const Teacher = new TeacherModel({ id_BaseSalary, profession });
+    const People = new PeopleModel({
+        id, IdType, Names, SureNames, Gender, neighborhood, Address, Phone,
+        occupation, email, EPS, img, DateofBirth, DepartamentBirth, MunicipeBirth, role, user
+    })
 
-    SavingOnDB(Teacher)
+    Teacher.id = People._id;
+
+    await Promise.all([
+        SavingOnDB(People),
+        SavingOnDB(Teacher)
+    ])
         .then(resp => response.success(res, res, 'teacher was stored Safely', 201, resp))
         .catch((e) => response.error(res, res, 'error storeding teacher', 500, e))
+
+
 
 
 };
@@ -70,16 +64,10 @@ const createItem = async (req, res) => {
 
 const updateItem = async (req, res) => {
 
-    const id = req.params.id;
-    const { body } = req;
-    const Teacher = new TeacherModel({
-        _id: body._id,
-        id_BaseSalary: body.id_BaseSalary,
-        profession: body.profession
-    });
-    Teacher._id = id;
-    Teacher.id = id;
-    UpdatingOnDB(id, TeacherModel, Teacher)
+    const id_search = req.params.id;
+    const { _id,id,...rest } = req.body;
+   
+    UpdatingOnDB(id_search, TeacherModel, rest)
         .then(resp => response.success(req, res, 'teacher was updated Safely', 200, resp)
         ).catch((e) => response.error(req, res, 'error Updating Teacher', 500, e))
 };

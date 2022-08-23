@@ -1,6 +1,7 @@
 
-const { AthletesModel, ContactModel } = require("../../models");
-const { response, UpdatingOnDB, SavingOnDB } = require('../../helpers');
+const { AthletesModel, ContactModel, PeopleModel } = require("../../models");
+const { response, UpdatingOnDB, SavingOnDB, SearchingAllOnDB, Populate } = require('../../helpers');
+
 
 /**
  * get a data
@@ -8,30 +9,15 @@ const { response, UpdatingOnDB, SavingOnDB } = require('../../helpers');
  * @param {*} res 
  */
 const getItems = async (req, res) => {
-    let from = req.query.from || 0;
-    from = Number(from);
-    const count = await AthletesModel.estimatedDocumentCount();
+    const { from = 0, limit = 5 } = req.query;
+    let query = { deleted: false }
 
-
-    await AthletesModel.find({})
-        .skip(from)
-        .populate(
-            [{
-                path: 'id',
-                populate: [{
-                    path: 'user',
-                    select: 'Nombre email'
-                }]
-            },{ path: 'IdContact' }
-        ])
-        .limit(5)
-        .exec(
-            (err, athlete) => {
-                if (err) return response.error(res, res, 'error loandig  Athlete', 500, err);
-                response.success(res, res, 'load completed', 200, athlete, count)
-
-
-            });
+    await Promise.all([
+        AthletesModel.countDocuments(query),
+        SearchingAllOnDB(AthletesModel, Number(from), Number(limit), query, Populate.PopulateAthlete)
+    ])
+        .then(([count, user]) => response.success(res, res, 'load completed', 200, user, count))
+        .catch((err) => response.error(res, res, 'error loandig data for teachers', 500, err))
 };
 
 /**
@@ -40,23 +26,35 @@ const getItems = async (req, res) => {
 * @param {*} res 
 */
 const createItem = async (req, res) => {
-
-    const { body } = req;
-    const Contact = new ContactModel({
-        id: body.IdContact,
-        Names: body.Names,
-        SureNames: body.SureNames,
-        neighborhood: body.neighborhood,
-        Address: body.Address,
-        Phone: body.Phone,
-        occupation: body.occupation,
-        email: body.email,
-
+    const user = req.user._id;
+    const { id, IdType, Names, SureNames, Gender, neighborhood, Address, Phone,
+        occupation, email, EPS, img, DateofBirth, DepartamentBirth, MunicipeBirth, role, ...body } = req.body;
+    const People = new PeopleModel({
+        id, IdType, Names, SureNames, Gender, neighborhood, Address, Phone,
+        occupation, email, EPS, img, DateofBirth, DepartamentBirth, MunicipeBirth, role, user
     });
+    let {_id, ...Contact} = await ContactModel.findOne({ id: body.IdContact });
+    let contactSaved
+    if (!Contact) {
+        Contact = new ContactModel({
+            id: body.IdContact,
+            Names: body.ContactNames,
+            SureNames: body.ContactSureNames,
+            neighborhood: body.Contactneighborhood,
+            Address: body.ContactAddress,
+            Phone: body.ContactPhone,
+            occupation: body.Contactoccupation,
+            email: body.Contactemail,
+        });
+        _id = Contact._id
+        contactSaved = SavingOnDB(Contact);   
+    }else {
+        contactSaved = UpdatingOnDB(_id ,ContactModel, Contact);   
+    }
     const Athletes = new AthletesModel({
-        id: body._id,
+        id: People._id,
         age: body.age,
-        IdContact: Contact._id,
+        IdContact: _id,
         ailments: body.ailments,
         medicines: body.medicines,
         allergies: body.allergies,
@@ -68,65 +66,17 @@ const createItem = async (req, res) => {
         weight: body.weight,
         state: body.state,
     });
-
+    
     Promise.all([
+        SavingOnDB(People),
         SavingOnDB(Athletes),
-        SavingOnDB(Contact)
+        contactSaved
+       
     ])
         .then(resp => response.success(res, res, 'athlete was stored Safely', 201, resp))
         .catch((e) => response.error(res, res, 'error storeding peopel', 500, e))
 };
 
-/**
-* create new register 
-* @param {*} req 
-* @param {*} res 
-*/
-const createcontact = async (req, res) => {
-
-    const { body } = req;
-    const Contact = new ContactModel({
-        id: body.IdContacto,
-        Names: body.Names,
-        SureNames: body.SureNames,
-        neighborhood: body.neighborhood,
-        Address: body.Address,
-        Phone: body.Phone,
-        occupation: body.occupation,
-        email: body.email,
-
-    });
-
-    SavingOnDB(Contact)
-        .then(resp => response.success(res, res, 'athlete was stored Safely', 201, resp))
-        .catch((e) => response.error(res, res, 'error storeding peopel', 500, e))
-};
-/**
- * update a existing record 
- * @param {*} req 
- * @param {*} res 
- */
-
-const updatecontact = async (req, res) => {
-
-    const id = req.params.id;
-    const { body } = req;
-    const Contact = new ContactModel({
-        id: body.IdContacto,
-        Names: body.Names,
-        SureNames: body.SureNames,
-        neighborhood: body.neighborhood,
-        Address: body.Address,
-        Phone: body.Phone,
-        occupation: body.occupation,
-        email: body.email,
-
-    });
-    Contact._id = id;
-    UpdatingOnDB(id, ContactModel, Contact)
-        .then(resp => response.success(req, res, 'athlete was updated Safely', 200, resp))
-        .catch((e) => response.error(req, res, 'error Updating athlete', 500, e))
-};
 
 /**
  * update a existing record 
@@ -136,13 +86,29 @@ const updatecontact = async (req, res) => {
 
 const updateItem = async (req, res) => {
 
-    const id = req.params.id;
+    const id = req.params.id_search;
     const { body } = req;
-    const Athlete = new AthletesModel({
-
+    let {_id, ...Contact} = await ContactModel.findOne({ id: body.IdContact });
+    let contactSaved
+    if (!Contact) {
+        Contact = new ContactModel({
+            id: body.IdContact,
+            Names: body.ContactNames,
+            SureNames: body.ContactSureNames,
+            neighborhood: body.Contactneighborhood,
+            Address: body.ContactAddress,
+            Phone: body.ContactPhone,
+            occupation: body.Contactoccupation,
+            email: body.Contactemail,
+        });
+        _id = Contact._id
+        contactSaved = SavingOnDB(Contact);   
+    }else {
+        contactSaved = UpdatingOnDB(_id ,ContactModel, Contact);   
+    }
+    const Athlete = {
         age: body.age,
-        IdContact: body.IdContact,
-        IdContact2: body.IdContact2,
+        IdContact: _id,
         ailments: body.ailments,
         medicines: body.medicines,
         allergies: body.allergies,
@@ -153,11 +119,14 @@ const updateItem = async (req, res) => {
         height: body.height,
         weight: body.weight,
         state: body.state,
-    });
-    Athlete._id = id;
-    Athlete.id = id;
-
-    UpdatingOnDB(id, AthletesModel, Athlete)
+    };
+ 
+  
+    Promise.all([
+        UpdatingOnDB(id, AthletesModel, Athlete),
+        contactSaved
+       
+    ])
         .then(resp => response.success(req, res, 'athlete was updated Safely', 200, resp))
         .catch((e) => response.error(req, res, 'error Updating athlete', 500, e))
 };
@@ -167,7 +136,6 @@ module.exports = {
     getItems,
     createItem,
     updateItem,
-    createcontact,
-    updatecontact
+   
 
 }

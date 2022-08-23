@@ -12,7 +12,7 @@ const TeacherSchema = new schema(
         },
         id_BaseSalary: {
             type: String,
-            ref: 'sueldosBase',
+            ref: 'BaseSalary',
             required: true
         },
         profession: {
@@ -30,5 +30,9 @@ const TeacherSchema = new schema(
 
 TeacherSchema.plugin(uniquevallidator, { message: '{PATH} must be unique' })
 TeacherSchema.plugin(mongooseDelete, {overrideMethods: 'all'})
+TeacherSchema.methods.toJSON = function () {
+    const { __v, deleted, ...teacher } = this.toObject();
+    return teacher;
+}
 
 module.exports = mongoose.model('Teachers', TeacherSchema);

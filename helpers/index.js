@@ -1,11 +1,14 @@
 const  models = {
     response: require('./response/response'),
     UpdatingOnDB: require('./db/updating'),
+    SearchingAllOnDB: require('./db/searchingAll'),
     SearchingByIdOnDB: require('./db/searchingById'),
     SearchingByNameOnDB: require('./db/seachingByName'),
     SearchingPayMode: require('./db/seachinrByPayMode'),
     DeletingMonthlyOrdailypay: require('./db/DeleteMonthlyOrdailypay'),
-    SavingOnDB: require('./db/saving.js')
+    SavingOnDB: require('./db/saving.js'),
+    Populate: require('./pupalate/populate'),
+    SaveOrUpdateContact: require('./contactEmergecy/saveAndUpdating')
 
 }
 module.exports = models

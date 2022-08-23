@@ -5,8 +5,7 @@ const  mongooseDelete = require('mongoose-delete');
 
 const  DiscipineSchema = new schema({
 
-    id: { type: String},
-    Name: { type: String, required: [true, 'el nombre es necesario'] },
+    Names: { type: String, required: [true, 'el nombre es necesario'] },
     valuePerHour: { type: Number, required: true},
     valuePerMonth: { type: Number, required: true},
 },

@@ -1,7 +1,6 @@
 const { UserModel } = require('../../models')
 const bcrypt = require('bcryptjs');
-const { response } = require('../../helpers');
-const user = require('../../models/staff/user');
+const { response, SavingOnDB, UpdatingOnDB, SearchingAllOnDB } = require('../../helpers');
 
 /**
  * get a  list 
@@ -10,23 +9,14 @@ const user = require('../../models/staff/user');
  */
 const getItems = async (req, res) => {
 
-    let from = req.query.from || 0;
-    from = Number(from);
-    const count = await UserModel.estimatedDocumentCount();
-
-
-    await UserModel.find({}, 'Name email img role createdAt updatedAt')
-        .skip(from)
-        .limit(5)
-        .exec(
-            (err, user) => {
-                if (err) {
-                    response.error(res, res,'error loandig data for User', 500, err);
-                }
-                response.success(res, res, 'load completed', 200, user, count )
-
-
-            });
+    const {from = 0, limit = 5} = req.query; 
+    const query = { deleted: false}
+    await Promise.all([
+        UserModel.countDocuments( query ),
+        SearchingAllOnDB(UserModel, from, limit, query)
+    ])
+    .then(([count, user]) =>  response.success(res, res, 'load completed', 200, user,count ))
+    .catch((err) =>  response.error(res, res,'error loandig data for User', 500, err))
 };
 
 /**
@@ -42,24 +32,13 @@ const getItem = (req, res) => { };
  * @param {*} res 
  */
 const createItem = async (req, res) => {
-    const { body } = req;
-
-    const user = new UserModel({
-        Name: body.Name,
-        email: body.email,
-        password: bcrypt.hashSync(body.password, 10),
-        img: body.img,
-        role: body.role
-    });
+    const { Name , email , password , img  ,role} = req.body;
+    const user = new UserModel({ Name , email , password , img  ,role});
     user.id = user._id
-    await user.save((err, userSaved) => {
-        if (err) {
-            response.error(res, res,'error create user', 500, err);
-        }
-        response.success(res, res, 'user created successfully', 201, userSaved)
-    });
-
-
+    user.password = bcrypt.hashSync(password, 10);
+    await SavingOnDB(user)
+    .then((userSaved) => {  response.success(req, res, 'user created successfully', 201, userSaved)})
+    .catch((err) => {  response.error(req, res, 'error creating user', 500, err)})
 };
 /**
  * update a existing record 
@@ -68,28 +47,14 @@ const createItem = async (req, res) => {
  */
 
 const updateItem = async (req, res) => {
-    const id = req.params.id;
-    const body = req.body;
-    await UserModel.findById(id, (err, user) => {
-
-        (err) && response.error(req, res,'error searching for user', 500, err);
-
-        (!user) && response.error(req, res,`the user ${ id } no found`, 404, `the user not exist`);
-        
-        user.Name = body.Name;
-        user.email = body.email;
-        user.role = body.role;
-
-        user.save((err, savededUser) => {
-
-            if (err)response.error(req, res,'error upduting User', 500, err); 
-            savededUser.password = '<3'
-            response.success(req, res, 'user updated successfully', 200, savededUser)
-
-        });
-
-    });
-
+    const {id} = req.params;
+    const { _id, password, email, ...rest} = req.body;
+    if (password) {
+        password = bcrypt.hashSync(body.password, 10);
+    }
+    await UpdatingOnDB(id , UserModel ,rest )
+    .then( (savededUser) => {response.success(req, res, 'user updated successfully', 200, savededUser)})
+    .catch( (err) => response.error(req, res,'error upduting User', 500, err)) ;
 };
 
 /**
@@ -98,18 +63,9 @@ const updateItem = async (req, res) => {
  * @param {*} res 
  */
 const deleteItem = async (req, res) => {
-    const id = req.params.id;
-
-    await UserModel.deleteOne({ _id: id }, (err, deletedUser) => {
-
-
-        if (err) response.error(req, res,'error deleting  user', 500, err);
-        if (!deletedUser) response.error(req, res,`the user ${ id } no found`, 404, `the user not exist`);
-        response.success(req, res, 'user deleted successfully', 200, savededUser)
-
-
-
-    });
+    const { id } = req.params;
+    await UpdatingOnDB(id, UserModel, { deleted: true} )
+    .then((savededUser) => {response.success(req, res, 'user deleted successfully', 200, savededUser)})
 };
 
 module.exports = {

@@ -6,7 +6,7 @@ const  mongooseDelete = require('mongoose-delete');
 const ClassSchema = new schema({
     
     id: { type: String, required: true},
-    Name: { type: String, required: true},
+    Names: { type: String, required: true},
     id_discipline: { type: schema.Types.ObjectId , ref: 'disciplines', required: [true, 'the id_discipline is required'] },
     id_teacher: { type: String , ref: 'Teachers', required: true },
     DateStart: { type: Date, required: [true, 'the date start is required'] },

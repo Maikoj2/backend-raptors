@@ -1,13 +1,31 @@
 ////////////////////////////////////////
-function searchingByName(search, colleccion, from) {
+function searchingByName(search, collection, from, limit, role = '') {
+    if (role !== '') {
+        return new Promise((resolve, reject) => {
+            collection.find({ Names: search, deleted: false }).and([{role}])
+                .skip(from)
+                .limit(limit)
+                .exec((err, resp) => {
+
+                    if (err) {
+                        reject('error to seaching', err)
+                    } else {
+
+                        resolve(resp)
+                    }
+
+                });
+
+        });
+    }
     return new Promise((resolve, reject) => {
-        colleccion.find({ Name: search })
+        collection.find({ Names: search, deleted: false })
             .skip(from)
-            .limit(5)
+            .limit(limit)
             .exec((err, resp) => {
 
                 if (err) {
-                     reject('error al cargar asistencia', err)
+                    reject('error to seaching', err)
                 } else {
 
                     resolve(resp)

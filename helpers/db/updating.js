@@ -1,6 +1,6 @@
-function UpdateRegister( id, collection, data) {
+function UpdateRegister( _id, collection, data) {
     return new Promise((resolve, reject) => {
-        collection.findOneAndUpdate({_id: id},data )
+        collection.findOneAndUpdate({_id},data )
             .exec((err, dataupdate) => {
                 (err)?reject(err):resolve(dataupdate)
             });

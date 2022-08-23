@@ -1,6 +1,6 @@
 
 const { PeopleModel } = require('../../models')
-const { response, UpdatingOnDB, SavingOnDB } = require('../../helpers');
+const { response, UpdatingOnDB, SavingOnDB, SearchingAllOnDB } = require('../../helpers');
 
 
 /**
@@ -11,21 +11,16 @@ const { response, UpdatingOnDB, SavingOnDB } = require('../../helpers');
 
 const getItems = async (req, res) => {
 
-    let from = req.query.from || 0;
-    from = Number(from);
-    const count = await PeopleModel.estimatedDocumentCount();
+    const { from = 0, limit = 5 } = req.query;
+    const query = { deleted: false }
 
-
-    await PeopleModel.find({})
-        .skip(from)
-        .limit(5)
-        .exec(
-            (err, peoples) => {
-                if (err) response.error(res, res, 'error loandig data for people', 500, err);
-                response.success(res, res, 'load completed', 200, peoples, count )
-
-            });
-};
+    await Promise.all([
+        PeopleModel.countDocuments(query),
+        SearchingAllOnDB(PeopleModel, Number(from), Number(limit), query, [] )
+    ])
+        .then(([count, user]) => response.success(res, res, 'load completed', 200, user, count))
+        .catch((err) => response.error(res, res, 'error loandig data for peoples', 500, err))
+}
 /**
  * create new register 
  * @param {*} req 

@@ -11,19 +11,12 @@ const { response } = require('../../helpers');
 const Login = async (req, res) => {
     const SEED = process.env.SEED
 
-    const { body } = req;
-    await UserModel.findOne({ email: body.email }).then(userdb => {
-        if ( !userdb || !bcrypt.compareSync(body.password, userdb.password)) return response.error(req, res, 'wrong credentials', 401, '   ');
-        userdb.password = ':)'
+    const { email, password } = req.body;
+    await UserModel.findOne({ email}).then(userdb => {
+        if (!bcrypt.compareSync(password, userdb.password)) return response.error(req, res, 'wrong credentials', 401, '   ');
         // crear token
         const token = jwt.sign({ usuario: userdb }, SEED, { expiresIn: 14400 }) //4
-        res.status(201).json({
-            ok: true,
-            usuario: userdb,
-            token: token,
-            id: userdb._id
-
-        });
+        response.success(req, res, {token: token},201,[userdb, {id: userdb._id}]);
 
     })
 };

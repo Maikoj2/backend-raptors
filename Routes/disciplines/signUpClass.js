@@ -4,9 +4,9 @@ const Registro = require('../../models/discipline/signUpClass');
 const Clase = require('../../models/discipline/class');
 const Pagodiario = require('../../models/facturas/DailyPayment');
 const pagosMensuales = require('../../models/facturas/MonthlyPayment');
-const autenticacion = require('../../middelware/autenticacion');
-const Prestamo = require('../../models/facturas/Prestamos');
-const asistencia = require('../../models/discipline/asistencia');
+const autenticacion = require('../../middleware/autenticacion');
+const Prestamo = require('../../models/facturas/loan');
+const asistencia = require('../../models/discipline/attendance');
 const { getItems, createItem, updateItem } = require('../../Controllers/discipline/signUpClass');
 
 

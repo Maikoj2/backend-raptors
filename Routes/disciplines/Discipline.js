@@ -1,9 +1,12 @@
 const  expres = require('express')
 const  app = expres();
+const { check } = require('express-validator')
 const  Disciplina = require('../../models/discipline/discipline');
-const  autenticacion = require('../../middelware/autenticacion');
+const  autenticacion = require('../../middleware/autenticacion');
 const { getItems, createItem, updateItem } = require('../../Controllers/discipline/Discipline');
-
+const { validateFields } = require('../../middleware/ValidateInputs');
+const { ExistById } = require('../../helpers/Validators/dbValidators');
+const { DisciplineModel } = require('../../models');
 
 /**
  * get al  discipline  registered 
@@ -15,11 +18,20 @@ app.get('/', getItems);
  * update a discipline  registered 
  */
 
-app.put('/:id',autenticacion.verificatoken, updateItem);
+app.put('/:id',[ 
+    check('id', 'the id is invalide').isMongoId(),
+     check('id').custom((id) => ExistById(id, DisciplineModel)),
+    validateFields,
+    autenticacion.verificatoken], updateItem);
 /**
  * create a discipline  registered 
  */
-app.post('/', autenticacion.verificatoken, createItem);
+app.post('/', [ 
+    check('Names', 'the occupNamesation is required').not().isEmpty(),
+    check('valuePerHour', 'the valuePerHour is required').not().isEmpty(),
+    check('valuePerMonth', 'the valuePerMonth is required').not().isEmpty(),
+    validateFields,
+    autenticacion.verificatoken], createItem);
 /**
  * deleted (todo) discipline  registered 
  */

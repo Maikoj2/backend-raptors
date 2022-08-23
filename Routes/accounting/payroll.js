@@ -4,7 +4,7 @@ var Nomina = require('../../models/nomina/nomina');
 var Horasextras = require('../../models/nomina/Horasextras');
 var Devengados = require('../../models/nomina/Devengado');
 var Deducidos = require('../../models/nomina/Deducido');
-var autenticacion = require('../../middelware/autenticacion');
+var autenticacion = require('../../middleware/autenticacion');
 const Devengado = require('../../models/nomina/Devengado');
 
 

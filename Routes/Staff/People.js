@@ -1,7 +1,7 @@
 const expres = require('express');
 const app = expres();
 const { getItems, createItem,updateItem } = require('../../Controllers/Staff/People');
-const autenticacion = require('../../middelware/autenticacion')
+const autenticacion = require('../../middleware/autenticacion')
 
 
 /**

@@ -21,7 +21,7 @@ const getItems = async (req, res) => {
             }]
         },
         {
-            path: 'id_discipline',
+        path: 'id_discipline',
             select:'Name valuePerHour valuePerMonth'
         },
         {
@@ -47,7 +47,7 @@ const createItem = async (req, res) => {
     const id_user = req.user._id;
     const { body } = req;
     const Classs = new ClassModel({
-        Name: body.Name,
+        Names: body.Names,
         id_discipline: body.id_discipline,
         id_teacher: body.id_teacher,
         DateStart: body.DateStart,
@@ -75,7 +75,7 @@ const updateItem = async (req, res) => {
     const id = req.params.id;
     const { body } = req;
     const Discipline = new ClassModel({
-        Name: body.Name,
+        Names: body.Names,
         id_discipline: body.id_discipline,
         id_teacher: body.id_teacher,
         DateStart: body.DateStart,

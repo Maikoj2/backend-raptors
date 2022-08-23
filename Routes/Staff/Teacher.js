@@ -1,10 +1,14 @@
-var expres = require('express')
-var app = expres();
-var autenticacion = require('../../middelware/autenticacion')
-var Persona = require('../../models/staff/people');
-var Profesor = require('../../models/staff/Teacher');
-var Clase = require('../../models/discipline/class');
+const expres = require('express')
+const app = expres();
+const { check } = require('express-validator')
+const autenticacion = require('../../middleware/autenticacion')
+const Persona = require('../../models/staff/people');
+const Profesor = require('../../models/staff/Teacher');
+const Clase = require('../../models/discipline/class');
 const { getItems, createItem, updateItem } = require('../../Controllers/Staff/Teacher');
+const { isRolValid, ExistById } = require('../../helpers/Validators/dbValidators');
+const { validateFields } = require('../../middleware/ValidateInputs');
+const { BaseSalaryModel, TeacherModel } = require('../../models');
 
 /**
  * get al  teachers registered 
@@ -13,11 +17,34 @@ app.get('/', getItems);
 /**
  * upodate a Teache by id
  */
-app.put('/:id', autenticacion.verificatoken,updateItem);
+app.put('/:id-search',[ 
+    check('id-search', 'the id is invalide').isMongoId(),
+    check('role').custom(isRolValid),
+    check('id').custom((id) => ExistById(id, TeacherModel)),
+    check('id_BaseSalary').custom((id_BaseSalary) => ExistById(id_BaseSalary, BaseSalaryModel)),
+    validateFields,
+    autenticacion.verificatoken],updateItem);
 /**
  * save a register on data base (a teacher)
  */
-app.post('/', autenticacion.verificatoken, createItem);
+app.post('/',[
+    check('id', 'the id is required').not().isEmpty(),
+    check('Names', 'the Names is required').not().isEmpty(),
+    check('IdType', 'the IdType is required').not().isEmpty(),
+    check('SureNames', 'the SureNames is required').not().isEmpty(),
+    check('Gender', 'the Gender is required').not().isEmpty(),
+    check('neighborhood', 'the neighborhood is required').not().isEmpty(),
+    check('Address', 'the Address is required').not().isEmpty(),
+    check('Phone', 'the Phone is required').not().isEmpty(),
+    check('occupation', 'the occupation is required').not().isEmpty(),
+    check('DateofBirth', 'the DateofBirth is required').not().isEmpty(),
+    check('DepartamentBirth', 'the DepartamentBirth is required').not().isEmpty(),
+    check('id_BaseSalary').custom((id_BaseSalary) => ExistById(id_BaseSalary, BaseSalaryModel)),
+    check('profession', 'the profession is required').not().isEmpty(),
+    check('email', 'the email is ivalide').isEmail(),
+    check('role').custom(isRolValid),
+    validateFields, 
+    autenticacion.verificatoken], createItem);
 
 /**
  * 
@@ -27,7 +54,7 @@ app.post('/', autenticacion.verificatoken, createItem);
 
 app.delete('/:id', autenticacion.verificatoken, (req, res) => {
 
-    var id = req.params.id;
+    const id = req.params.id;
     buscarclase(id).then(clases => {
 
         if (Object.keys(clases).length === 0 || clase == null) {

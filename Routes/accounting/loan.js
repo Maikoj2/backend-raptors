@@ -1,7 +1,7 @@
 var expres = require('express')
 var app = expres();
-var Prestamo = require('../../models/facturas/Prestamos');
-var autenticacion = require('../../middelware/autenticacion')
+var Prestamo = require('../../models/facturas/loan');
+var autenticacion = require('../../middleware/autenticacion')
 
 
 //  rutas

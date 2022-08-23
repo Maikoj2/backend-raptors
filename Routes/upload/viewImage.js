@@ -1,7 +1,7 @@
 var expres = require('express');
 const getImage = require('../../Controllers/upload/viewImage');
 var app = expres();
-const autenticacion = require('../../middelware/autenticacion');
+const autenticacion = require('../../middleware/autenticacion');
 
 
 
