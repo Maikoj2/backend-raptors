@@ -17,18 +17,10 @@ const saveAndUpdating = async (IdContact) => {
             occupation: body.Contactoccupation,
             email: body.Contactemail,
         });
-       
-      const data = {
-        saveed:saveRegister(Contact),
-        _id: Contact._id,
-      }
-      return ;   
+      _id = Contact._id
+      return  [ saveRegister(Contact),Contact._id];   
     }else {
-        const data = {
-            saveed:UpdateRegister(_id ,ContactModel, Contact),
-            _id:_id,
-          }
-        return data ;   
+        return  [UpdateRegister(_id ,ContactModel, Contact), _id];   
     }
 };
 module.exports  = saveAndUpdating;

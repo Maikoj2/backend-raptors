@@ -19,7 +19,6 @@
 
  function error (req, res, message, status, err) {
     console.log(err);
-
     return res.status(status || 500).json({
         ok: false,
         message: message,

@@ -30,7 +30,7 @@ const AthleteSchema = new schema({
 AthleteSchema.plugin(uniquevallidator, { message: '{PATH} must be unique ' })
 AthleteSchema.plugin(mongooseDelete, {overrideMethods: 'all'})
 AthleteSchema.methods.toJSON = function () {
-    const { __v, password, deleted, ...User } = this.toObject();
+    const { __v, deleted, ...User } = this.toObject();
     return User;
 }
 

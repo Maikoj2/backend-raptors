@@ -1,6 +1,7 @@
-function searchById( id, collection) {
+function searchById( _id, collection, populate = []) {
     return new Promise((resolve, reject) => {
-        collection.find({ id: id })
+        collection.findById({ _id })
+        .populate(populate)
             .exec((err, findedData) => {
                  (err)? 
                  reject(err):

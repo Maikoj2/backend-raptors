@@ -12,7 +12,7 @@ const getItems = async (req, res) => {
     const query = { deleted: false }
     await Promise.all([
         TeacherModel.countDocuments(query),
-        SearchingAllOnDB(TeacherModel, Number(from), Number(limit), query, Populate.populateTeacher )
+        SearchingAllOnDB(TeacherModel, Number(from), Number(limit), query, Populate.Teacher )
     ])
         .then(([count, user]) => response.success(res, res, 'load completed', 200, user, count))
         .catch((err) => response.error(res, res, 'error loandig data for teachers', 500, err))

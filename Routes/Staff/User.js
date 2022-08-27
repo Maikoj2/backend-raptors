@@ -41,8 +41,7 @@ app.put('/:id', [
  */
 
 app.delete('/:id',[
-    check('id', 'the id is invalide').isMongoId(),
-    check('id').custom((id) => ExistById(id, UserModel)),
+    check('id', 'the id is invalide').isMongoId().bail().custom((id) => ExistById(id, UserModel)),
      validateFields,
      autenticacion.verificatoken], 
      deleteItem);

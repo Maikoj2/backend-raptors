@@ -10,10 +10,11 @@ const  models = {
     ClassModel: require('./discipline/class'),
     SignUpClassModel: require('./discipline/signUpClass'),
     AttendanceModel: require('./discipline/attendance'),
-    DaylypayModel: require('./facturas/DailyPayment'),
+    DailypayModel: require('./facturas/DailyPayment'),
     MonthlypayModel: require('./facturas/MonthlyPayment'),
     LoanModel: require('./facturas/loan'),
     BaseSalaryModel: require('./nomina/BaseSalary'),
+    payModeModel: require('./nomina/paymode'),
 
 }
 module.exports = models

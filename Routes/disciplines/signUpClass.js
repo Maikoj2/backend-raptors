@@ -1,5 +1,6 @@
 const expres = require('express')
 const app = expres();
+const { check, body  } = require('express-validator');
 const Registro = require('../../models/discipline/signUpClass');
 const Clase = require('../../models/discipline/class');
 const Pagodiario = require('../../models/facturas/DailyPayment');
@@ -8,6 +9,9 @@ const autenticacion = require('../../middleware/autenticacion');
 const Prestamo = require('../../models/facturas/loan');
 const asistencia = require('../../models/discipline/attendance');
 const { getItems, createItem, updateItem } = require('../../Controllers/discipline/signUpClass');
+const { validateFields } = require('../../middleware/ValidateInputs');
+const { AthletesModel, ClassModel, SignUpClassModel } = require('../../models');
+const { isPaymodeValid, ExistSignupontable, ExistById } = require('../../helpers/Validators/dbValidators');
 
 
 
@@ -21,12 +25,22 @@ app.get('/', getItems);
 // actualizar  los Profesores
 // ==============================
 
-app.put('/:id', autenticacion.verificatoken, updateItem);
+app.put('/:id', [
+    check('id').isMongoId().bail().custom((id) => ExistById(id, SignUpClassModel)),
+    validateFields,
+    autenticacion.verificatoken], updateItem);
 
 // ==============================
 // ingresar Alumno nuevo y crea la base de datos de los que pagan diarios o mensual
 // ==============================
-app.post('/', autenticacion.verificatoken, createItem);
+app.post('/', [
+    
+    check(['id_Athlete']).isMongoId().bail().custom((id_Athlete) => ExistById(id_Athlete, AthletesModel)).bail(),
+    check(['id_class']).isMongoId().bail() .custom((id_class) => ExistById(id_class, ClassModel)),
+    check(['payMode']).not().isEmpty().bail().custom((payMode)=>isPaymodeValid(payMode)),
+    body('id_Athlete').custom((value, { req }) => ExistSignupontable(req.body, SignUpClassModel) ),
+    validateFields,
+    autenticacion.verificatoken], createItem);
 // ==============================
 // eliminar  los Usuarios
 // ==============================
@@ -134,55 +148,7 @@ function buscardeudas(busqueda) {
 
 
 }
-function buscarmodopago(busqueda) {
-    return new Promise((resolve, reject) => {
-        Registro.findById({ _id: busqueda })
-            .populate({
-                path: 'id_clase',
-                select: 'id_diciplina',
-                populate: [
-                    {
-                        path: 'id_diciplina',
-                        select: 'valor_hora  valor_mensualidad'
-                    }
-                ]
-            })
-            .exec((err, deudas) => {
 
-                if (err) {
-                    reject('error al cargar asistencia')
-                } else {
-                    resolve(deudas)
-                }
-
-            });
-
-    });
-
-
-}
-
-
-
-
-// funcion save
-function guardardato(dato) {
-    return new Promise((resolve, reject) => {
-        dato.save((err, datos) => {
-
-            if (err) {
-                reject('error al cargar asistencia')
-                console.log(err);
-            } else {
-                resolve(datos)
-            }
-
-        });
-
-    });
-
-
-}
 
 
 // eliminar registro depagos mensuales

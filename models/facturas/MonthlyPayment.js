@@ -4,7 +4,7 @@ const schema = mongoose.Schema;
 const  mongooseDelete = require('mongoose-delete'); 
 
 const MonthlypaySchema = new schema({
-    id: { type: String, required: true},
+
     id_SignUpclass: { type: String, required: true, ref:'signUps' },
     Price:    { type: Number ,   required: true},
     DateStart: { type: Date, required: true },
@@ -16,5 +16,9 @@ const MonthlypaySchema = new schema({
 
 MonthlypaySchema.plugin(uniquevallidator, { message: '{PATH} must be a unique' })
 MonthlypaySchema.plugin(mongooseDelete, {overrideMethods: 'all'})
+MonthlypaySchema.methods.toJSON = function () {
+    const { __v, deleted, ...User } = this.toObject();
+    return User;
+}
 
 module.exports = mongoose.model('Monthlypays', MonthlypaySchema);
