@@ -2,14 +2,12 @@ const expres = require('express')
 const app = expres();
 const { check, body  } = require('express-validator');
 const Registro = require('../../models/discipline/signUpClass');
-const Clase = require('../../models/discipline/class');
 const Pagodiario = require('../../models/facturas/DailyPayment');
 const pagosMensuales = require('../../models/facturas/MonthlyPayment');
-const autenticacion = require('../../middleware/autenticacion');
+const { valid, token } = require('../../middleware');
 const Prestamo = require('../../models/facturas/loan');
 const asistencia = require('../../models/discipline/attendance');
 const { getItems, createItem, updateItem } = require('../../Controllers/discipline/signUpClass');
-const { validateFields } = require('../../middleware/ValidateInputs');
 const { AthletesModel, ClassModel, SignUpClassModel } = require('../../models');
 const { isPaymodeValid, ExistSignupontable, ExistById } = require('../../helpers/Validators/dbValidators');
 
@@ -27,25 +25,25 @@ app.get('/', getItems);
 
 app.put('/:id', [
     check('id').isMongoId().bail().custom((id) => ExistById(id, SignUpClassModel)),
-    validateFields,
-    autenticacion.verificatoken], updateItem);
+    valid.validateFields,
+    token.verificatoken], updateItem);
 
 // ==============================
 // ingresar Alumno nuevo y crea la base de datos de los que pagan diarios o mensual
 // ==============================
 app.post('/', [
     
-    check(['id_Athlete']).isMongoId().bail().custom((id_Athlete) => ExistById(id_Athlete, AthletesModel)).bail(),
+    check(['id_Athlete']).isMongoId().custom((id_Athlete) => ExistById(id_Athlete, AthletesModel)),
     check(['id_class']).isMongoId().bail() .custom((id_class) => ExistById(id_class, ClassModel)),
     check(['payMode']).not().isEmpty().bail().custom((payMode)=>isPaymodeValid(payMode)),
     body('id_Athlete').custom((value, { req }) => ExistSignupontable(req.body, SignUpClassModel) ),
-    validateFields,
-    autenticacion.verificatoken], createItem);
+    valid.validateFields,
+    token.verificatoken], createItem);
 // ==============================
 // eliminar  los Usuarios
 // ==============================
 
-app.delete('/:id', autenticacion.verificatoken, (req, res) => {
+app.delete('/:id',token.verificatoken, (req, res) => {
 
     const id = req.params.id;
     Promise.all([

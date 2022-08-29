@@ -1,6 +1,6 @@
 const { SignUpClassModel, ClassModel } = require("../../models");
 const { response, UpdatingOnDB, SavingOnDB, SearchingByIdOnDB, Populate, SearchingAllOnDB } = require('../../helpers');
-const { savinDailyPayMode, savinMonthlyPayMode, updatingDailyPayMode , updatingmonthlyPayMode} = require("../../helpers/PayMode/SavingPaymode");
+const { savinDailyPayMode, savinMonthlyPayMode, updatingDailyPayMode, updatingmonthlyPayMode } = require("../../helpers/PayMode/SavingPaymode");
 
 /**
  * get a data
@@ -63,28 +63,22 @@ const updateItem = async (req, res) => {
     }
     switch (signUpClassSearched.payMode) {
         case 'DIARIO':
-             PaymodeCase =  await updatingDailyPayMode(id, signUpClassSearched, id_user);
+            PaymodeCase = await updatingDailyPayMode(id, signUpClassSearched, id_user);
             break;
         case 'MENSUAL':
-             PaymodeCase =  await updatingmonthlyPayMode(id, signUpClassSearched, id_user);
+            PaymodeCase = await updatingmonthlyPayMode(id, signUpClassSearched, id_user);
             break;
-    
+
         default:
             break;
     }
-    
+
     Promise.all([
-        UpdatingOnDB(id,SignUpClassModel,rest), 
-        PaymodeCase           
-    ]).then(resp => response.success(req, res, 'the register was saved Safely', 200, resp)
+        UpdatingOnDB(id, SignUpClassModel, rest),
+        PaymodeCase
+    ]).then(resp => response.success(req, res, 'the register was saved Safely', 200, resp))
 
-    )  
-    
 };
-
-
-git
-
 
 module.exports = {
     getItems,

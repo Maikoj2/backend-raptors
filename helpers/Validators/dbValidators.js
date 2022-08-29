@@ -53,15 +53,11 @@ const ExistCollections = async (nameColletions, next) => {
 
 const ExistSignupontable = async ({id_Athlete, id_class}, Colletion) => {
 
-    console.log(id_class, id_Athlete);
        const data = await Colletion.findOne({ id_Athlete, id_class, deleted: false })
-       console.log( data);
        if (data)
         throw new Error(`the athlete: '${id_Athlete}' is signed up  in ${id_class}`);
-    
-
-
 }
+
 
 
 

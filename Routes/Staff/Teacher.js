@@ -1,14 +1,15 @@
 const expres = require('express')
 const app = expres();
 const { check } = require('express-validator')
-const autenticacion = require('../../middleware/autenticacion')
+
 const Persona = require('../../models/staff/people');
 const Profesor = require('../../models/staff/Teacher');
 const Clase = require('../../models/discipline/class');
 const { getItems, createItem, updateItem } = require('../../Controllers/Staff/Teacher');
 const { isRolValid, ExistById } = require('../../helpers/Validators/dbValidators');
-const { validateFields } = require('../../middleware/ValidateInputs');
+ 
 const { BaseSalaryModel, TeacherModel } = require('../../models');
+const { valid, token } = require('../../middleware');
 
 /**
  * get al  teachers registered 
@@ -22,8 +23,8 @@ app.put('/:id-search',[
     check('role').custom(isRolValid),
     check('id').custom((id) => ExistById(id, TeacherModel)),
     check('id_BaseSalary').custom((id_BaseSalary) => ExistById(id_BaseSalary, BaseSalaryModel)),
-    validateFields,
-    autenticacion.verificatoken],updateItem);
+    valid.validateFields,
+    token.verificatoken],updateItem);
 /**
  * save a register on data base (a teacher)
  */
@@ -43,8 +44,8 @@ app.post('/',[
     check('profession', 'the profession is required').not().isEmpty(),
     check('email', 'the email is ivalide').isEmail(),
     check('role').custom(isRolValid),
-    validateFields, 
-    autenticacion.verificatoken], createItem);
+    valid.validateFields, 
+    token.verificatoken], createItem);
 
 /**
  * 
@@ -52,7 +53,7 @@ app.post('/',[
  * 
  */
 
-app.delete('/:id', autenticacion.verificatoken, (req, res) => {
+app.delete('/:id', token.verificatoken, (req, res) => {
 
     const id = req.params.id;
     buscarclase(id).then(clases => {

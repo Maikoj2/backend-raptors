@@ -1,7 +1,8 @@
 const expres = require('express');
 const app = expres();
 const { getItems, createItem,updateItem } = require('../../Controllers/Staff/People');
-const autenticacion = require('../../middleware/autenticacion')
+const { token } = require('../../middleware');
+
 
 
 /**
@@ -11,11 +12,11 @@ const autenticacion = require('../../middleware/autenticacion')
  /**
   * upodate a Teache by id
   */
- app.put('/:id', autenticacion.verificatoken, updateItem);
+ app.put('/:id', token.verificatoken, updateItem);
  /**
   * save a register on data base (a teacher)
   */
- app.post('/', autenticacion.verificatoken, createItem);
+ app.post('/',token.verificatoken,createItem);
 
  /**
   * [TODO] Deleted

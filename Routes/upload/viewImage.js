@@ -1,12 +1,12 @@
 var expres = require('express');
 const getImage = require('../../Controllers/upload/viewImage');
 var app = expres();
-const autenticacion = require('../../middleware/autenticacion');
+const { token, validateFields } = require('../../middleware');
 
 
 
 //  rutas
-app.get('/:tipo/:img', autenticacion.verificatoken ,getImage);
+app.get('/:tipo/:img', token.verificatoken ,getImage);
 
 
 module.exports = app;

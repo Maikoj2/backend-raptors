@@ -5,14 +5,12 @@ const  mongooseDelete = require('mongoose-delete');
 const estadosValidos = {
 
     values: ['PAGO', 'NO_PAGO'],
-    message: '{VALUE} no es un rol valido'
+    message: '{VALUE} invalid status'
 };
 
 const LoanSchema = new schema({
-    id: {
-        type: String,
-    },
-    id_SignUpclass: { type: String, ref: 'signUps' ,required: true},
+
+    idPeople: { type: String, ref: 'peoples' ,required: true},
     description: { type: String, default:' ', required: false },
     valueToPay: { type: Number, required: true },
     Date: { type: Date, required: true },
@@ -24,5 +22,9 @@ const LoanSchema = new schema({
 
 LoanSchema.plugin(uniquevallidator, { message: '{PATH} must be unique' })
 LoanSchema.plugin(mongooseDelete, {overrideMethods: 'all'})
+LoanSchema.methods.toJSON = function () {
+    const { __v, deleted, ...people } = this.toObject();
+    return people;
+}
 
-module.exports = mongoose.model('loans', LoanSchema);
+module.exports = mongoose.model('loan', LoanSchema);

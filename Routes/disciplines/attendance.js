@@ -1,11 +1,11 @@
 var expres = require('express')
 var app = expres();
+const { check  } = require('express-validator');
 var Asistencia = require('../../models/discipline/attendance');
-var autenticacion = require('../../middleware/autenticacion');
-var Prestamo = require('../../models/facturas/loan');
-var Registro = require('../../models/discipline/signUpClass');
-const mensualidad = require('../../models/facturas/MonthlyPayment');
-const { getItems, createItem } = require('../../Controllers/discipline/Attendance');
+ const { token, valid } = require('../../middleware');
+const { getItems, createItem, updateItem } = require('../../Controllers/discipline/Attendance');
+const { ClassModel } = require('../../models');
+const { ExistById } = require('../../helpers/Validators/dbValidators');
 
 
 
@@ -19,60 +19,23 @@ app.get('/', getItems);
 // actualizar  los asistencia
 // ==============================
 
-app.put('/:id', autenticacion.verificatoken, (req, res) => {
-
-    var id = req.params.id;
-    var body = req.body;
-
-    Asistencia.findById(id, (err, asistencia) => {
-
-
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'Error al buscar asistencia',
-                erros: err
-            });
-        }
-
-        if (!asistencia) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: 'asistencia con ' + id + ' no existe',
-                erros: { message: 'no existe el asistencia con ese id ' }
-            });
-        }
-
-        asistencia.fecha = body.fecha;
-        asistencia.estado = body.estado;
-        asistencia.Usuario = req.usuario._id;
-
-        asistencia.save((err, asistenciaGuardado) => {
-
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    mensaje: 'Error actualizar usuraio',
-                    erros: err
-                });
-            }
-            asistenciaGuardado.password = '<3'
-            res.status(200).json({
-                ok: true,
-                asistencia: asistenciaGuardado
-            });
-
-        });
-
-    });
-
-});
+app.put('/:id',[
+    check('id', 'the id is invalide').isMongoId(),
+    check(['Attendance','pay' ],'the data is requeride').not().isEmpty(),
+    check(['Date'],).not().isEmpty(),
+    valid.validateFields,
+    token.verificatoken], updateItem);
 
 
 // ==============================
 // ingresar Clase nuevo 
 // ==============================
-app.post('/', autenticacion.verificatoken,createItem);
+app.post('/',[
+    
+    check('Date', 'the Date is required').not().isEmpty(),
+    check(['id_class']).isMongoId().bail() .custom((id_class) => ExistById(id_class, ClassModel)),
+    valid.validateFields,
+    token.verificatoken], createItem);
 
 
 
@@ -80,7 +43,7 @@ app.post('/', autenticacion.verificatoken,createItem);
 // eliminar  los Usuarios
 // ==============================
 
-app.delete('/:id', autenticacion.verificatoken, (req, res) => {
+app.delete('/:id',token.verificatoken,(req, res) => {
 
     var id = req.params.id;
     var data;
@@ -118,35 +81,5 @@ app.delete('/:id', autenticacion.verificatoken, (req, res) => {
 
 });
 
-//////FUNCIONES//////
-
-function GuadarAsistencia(asistencia) {
-
-    asistencia.save((err, Guardado) => {
-        if (err) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: 'Error crear registro asistencia de clase',
-                erros: err
-            });
-        }
-        return Guardado;
-    });
-
-}
-function GuadarPrestamo(Prestamo) {
-
-    Prestamo.save((err, Guardado) => {
-        if (err) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: 'Error crear Prestamo asistencia de clase',
-                erros: err
-            });
-        }
-        return Guardado;
-    });
-
-}
 
 module.exports = app;

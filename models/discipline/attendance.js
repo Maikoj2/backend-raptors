@@ -4,7 +4,6 @@ const schema = mongoose.Schema;
 const  mongooseDelete = require('mongoose-delete'); 
 const AttendanceSchema = new schema({
 
-    id: { type: String, required: true},
     id_SignUpclass: { type: String, required: true, ref:'signUps' },
     Date: { type: Date, required: true  },
     Attendance: { type: Boolean, required: true },

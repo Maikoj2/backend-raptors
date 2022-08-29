@@ -4,7 +4,7 @@ var Nomina = require('../../models/nomina/nomina');
 var Horasextras = require('../../models/nomina/Horasextras');
 var Devengados = require('../../models/nomina/Devengado');
 var Deducidos = require('../../models/nomina/Deducido');
-var autenticacion = require('../../middleware/autenticacion');
+ const { verificatoken, token } = require('../../middleware');
 const Devengado = require('../../models/nomina/Devengado');
 
 
@@ -66,7 +66,7 @@ app.get('/', (req, res, next) => {
 });
 // //////////////////////////////////////
 // almacenna los datos de nomina devengados, deducidos y horas extras
-app.post('/', autenticacion.verificatoken,
+app.post('/', token.verificatoken,
     (req, res) => {
         var body = req.body;
         var id_usuario = req.usuario._id;
@@ -121,7 +121,7 @@ app.post('/', autenticacion.verificatoken,
 
     });
 // //////////////////////////////////////////////////////
-app.post('/Horasextras', autenticacion.verificatoken,
+app.post('/Horasextras', token.verificatoken,
     (req, res) => {
         var body = req.body;
         var id_usuario = req.usuario._id;
@@ -164,7 +164,7 @@ app.post('/Horasextras', autenticacion.verificatoken,
 
     });
 // ////////////////////////////////////////////
-app.post('/devengados', autenticacion.verificatoken,
+app.post('/devengados', token.verificatoken,
     (req, res) => {
         var body = req.body;
         var devengados = new Devengados({
@@ -204,7 +204,7 @@ app.post('/devengados', autenticacion.verificatoken,
             })
     });
 // ///////////////////////////////////////////////////////
-app.post('/deducidos', autenticacion.verificatoken,
+app.post('/deducidos', token.verificatoken,
     (req, res) => {
         var body = req.body;
         var deducidos = new Deducidos({
@@ -438,7 +438,7 @@ app.put('/deducidos/:id', (req, res) => {
 // eliminar  nomina
 // ==============================
 
-app.delete('/:id', autenticacion.verificatoken, (req, res) => {
+app.delete('/:id', token.verificatoken, (req, res) => {
 
     var id = req.params.id;
 

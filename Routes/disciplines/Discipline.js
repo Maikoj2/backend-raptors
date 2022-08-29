@@ -4,9 +4,10 @@ const { check } = require('express-validator')
 const  Disciplina = require('../../models/discipline/discipline');
 const  autenticacion = require('../../middleware/autenticacion');
 const { getItems, createItem, updateItem } = require('../../Controllers/discipline/Discipline');
-const { validateFields } = require('../../middleware/ValidateInputs');
+ 
 const { ExistById } = require('../../helpers/Validators/dbValidators');
 const { DisciplineModel } = require('../../models');
+const { valid, token } = require('../../middleware');
 
 /**
  * get al  discipline  registered 
@@ -21,8 +22,8 @@ app.get('/', getItems);
 app.put('/:id',[ 
     check('id', 'the id is invalide').isMongoId(),
      check('id').custom((id) => ExistById(id, DisciplineModel)),
-    validateFields,
-    autenticacion.verificatoken], updateItem);
+    valid.validateFields,
+    token.verificatoken], updateItem);
 /**
  * create a discipline  registered 
  */
@@ -30,13 +31,13 @@ app.post('/', [
     check('Names', 'the occupNamesation is required').not().isEmpty(),
     check('valuePerHour', 'the valuePerHour is required').not().isEmpty(),
     check('valuePerMonth', 'the valuePerMonth is required').not().isEmpty(),
-    validateFields,
-    autenticacion.verificatoken], createItem);
+    valid.validateFields,
+    token.verificatoken], createItem);
 /**
  * deleted (todo) discipline  registered 
  */
 
-app.delete('/:id', autenticacion.verificatoken, (req, res) => {
+app.delete('/:id', token.verificatoken, (req, res) => {
 
     const  id = req.params.id;
     let  data ;

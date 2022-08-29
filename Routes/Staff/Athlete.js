@@ -1,13 +1,13 @@
 const expres = require('express');
-const autenticacion = require('../../middleware/autenticacion');
 const app = expres();
 const { check } = require('express-validator');
+const { valid, token } = require('../../middleware');  
 const Deportista = require('../../models/staff/Athlete');
 const Persona = require('../../models/staff/people');
 const contatoEmergencia = require('../../models/staff/contactEmergen');
 const Registro = require('../../models/discipline/signUpClass');
 const { getItems, createItem, updateItem } = require('../../Controllers/Staff/Athlete');
-const { validateFields } = require('../../middleware/ValidateInputs');
+ 
 const { AthletesModel } = require('../../models');
 const { ExistById } = require('../../helpers/Validators/dbValidators');
 
@@ -22,35 +22,25 @@ app.get('/', getItems);
 app.put('/:id_search', [
     check('id_search', 'the id_search is invalide').isMongoId(),
     check('id_search').custom((id_search) => ExistById(id_search, AthletesModel)),
-    validateFields,
-    autenticacion.verificatoken], updateItem);
+    check(['id', 'IdContact','ContactNames',  'Names' , 'IdType' , 'SureNames', 'ContactSureNames'
+    , 'Gender' , 'neighborhood', 'Address' , 'Phone' , 'occupation', 'DateofBirth' , 'DepartamentBirth'  ], `data can't be empty`).not().isEmpty(),
+    valid.validateFields,
+    token.verificatoken], updateItem);
 
 /**
  * Create a new user on database 
  */
 app.post('/', [
-    check('id', 'the id is required').not().isEmpty(),
-    check('IdContact', 'the IdContact is required').not().isEmpty(),
-    check('ContactNames', 'the ContactNames is required').not().isEmpty(),
-    check('Names', 'the Names is required').not().isEmpty(),
-    check('IdType', 'the IdType is required').not().isEmpty(),
-    check('SureNames', 'the SureNames is required').not().isEmpty(),
-    check('ContactSureNames', 'the ContactSureNames is required').not().isEmpty(),
-    check('Gender', 'the Gender is required').not().isEmpty(),
-    check('neighborhood', 'the neighborhood is required').not().isEmpty(),
-    check('Address', 'the Address is required').not().isEmpty(),
-    check('Phone', 'the Phone is required').not().isEmpty(),
-    check('occupation', 'the occupation is required').not().isEmpty(),
-    check('DateofBirth', 'the DateofBirth is required').not().isEmpty(),
-    check('DepartamentBirth', 'the DepartamentBirth is required').not().isEmpty(),
+    check(['id', 'IdContact','ContactNames',  'Names' , 'IdType' , 'SureNames', 'ContactSureNames'
+        , 'Gender' , 'neighborhood', 'Address' , 'Phone' , 'occupation', 'DateofBirth' , 'DepartamentBirth'  ], `data can't be empty`).not().isEmpty(),
     check('email', 'the email is ivalide').isEmail(),
-    validateFields,
-    autenticacion.verificatoken], createItem);
+    valid.validateFields,
+    token.verificatoken], createItem);
 
 /**
  * delete a user by id 
  */
-app.delete('/:id', autenticacion.verificatoken, (req, res) => {
+app.delete('/:id',token.verificatoken , (req, res) => {
 
     const id = req.params.id;
     let data;

@@ -1,169 +1,43 @@
-var expres = require('express')
-var app = expres();
-var Prestamo = require('../../models/facturas/loan');
-var autenticacion = require('../../middleware/autenticacion')
+const expres = require('express')
+const app = expres();
 
 
-//  rutas
-app.get('/', (req, res, next) => {
+const { check } = require('express-validator');
+const { token, valid } = require('../../middleware');
+const { getItems, createItem, updateItem, deleteItem } = require('../../Controllers/accounting/loan');
+const { PeopleModel, LoanModel } = require('../../models');
+const { ExistById } = require('../../helpers/Validators/dbValidators');
 
-    var desde = req.query.desde || 0;
-    desde = Number(desde);
-    Prestamo.find({},)
-        .skip(desde)
-        .populate('idpersona', ' Nombres Apellidos email' )
-        .populate('Usuario',  'Nombre email'
-        )
-        .limit(5)
-        .exec(
-            (err, prestamo) => {
-                if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        mensaje: 'Error cargando prestamo',
-                        erros: err
-                    });
-                }
-                Prestamo.estimatedDocumentCount({}, (err, conteo) => {
+/**
+ * get a list of all users that have loan
+ */
+app.get('/', getItems);
 
-                    res.status(200).json({
-                        ok: true,
-                        prestamos: prestamo,
-                        total: conteo
-                    });
+/**
+ * Create a new loan on database 
+ */
+app.post('/', [
+    check('idPeople').custom((idPeople) => ExistById(idPeople, PeopleModel)),
+    check(['idPeople', 'description', 'valueToPay', 'Date'], `data can't be empty`).not().isEmpty(),
+    valid.validateFields,
+    token.verificatoken],
+    createItem);
 
-                })
-                
-
-            });
-
-
-
-
-});
-
-// ==============================
-// ingresar Prestamo nuevo 
-// ==============================
-app.post('/', autenticacion.verificatoken,
-    (req, res) => {
-        var body = req.body;
-        var id_usuario = req.usuario._id;
-        var prestamo = new Prestamo({
-            idpersona: body.idpersona,
-            Descripcion: body.descripcion,
-            ValorDeuda: body.valorDeuda,
-            Fecha: body.Fecha,
-            Usuario: id_usuario
-
-        });
-
-
-        prestamo.save((err, prestamoGuardado) => {
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    mensaje: 'Error crear prestamo',
-                    erros: err
-                });
-            }
-            res.status(201).json({
-                ok: true,
-                mensaje: 'Prestamo registrado',
-                Datos: prestamoGuardado
-            });
-
-        });
-    });
-
-    // ==============================
-// actualizar  los Personas
-// ==============================
-
-app.put('/:id', (req, res) => {
-
-    var id = req.params.id;
-    var body = req.body;
-
-    Prestamo.findById(id, (err, prestamo) => {
-
-
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'Error al buscar prestamo',
-                erros: err
-            });
-        }
-
-        if (!prestamo) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: 'prestamo con ' + id + ' no existe',
-                erros: { message: 'no existe el prestamo con ese id ' }
-            });
-        }
-
-        prestamo.Descripcion = body.descripcion;
-        prestamo.estado = body.estado;
-   
-        prestamo.save((err, prestamoGuardado) => {
-
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    mensaje: 'Error actualizar usuraio',
-                    erros: err
-                });
-            }
-
-            res.status(200).json({
-                ok: true,
-                prestamo: prestamoGuardado
-            });
-
-        });
-
-    });
-
-});
+/**
+ * Update a loan by id 
+ */
+app.put('/:id', [
+    check('id').isMongoId().bail().custom((id) => ExistById(id, LoanModel)),
+    valid.validateFields,
+    token.verificatoken] , updateItem);
 
 // ==============================
 // eliminar  
 // ==============================
 
-app.delete('/:id', autenticacion.verificatoken, (req, res) => {
-
-    var id = req.params.id;
-    var data;
-
-    Prestamo.deleteOne({_id: id}, (err, prestamoborrado) => {
-
-
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'Error borar prestamo',
-                erros: err
-            });
-        }
-        if (!prestamoborrado) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: 'persona con ' + id + ' no existe',
-                erros: { message: 'no existe el persona con ese id ' }
-            });
-        }
-    
-        res.status(200).json({
-            ok: true,
-            usuario: prestamoborrado
-        });
-
-
-    });
-
-
-});
+app.delete('/:id', [
+    check('id').isMongoId().bail().custom((id) => ExistById(id, LoanModel)),
+    valid.validateFields,
+    token.verificatoken], deleteItem);
 
 module.exports = app;

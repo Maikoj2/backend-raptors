@@ -24,7 +24,7 @@ Date.prototype.addMonths =  (value) =>{
 
 
 
-const  addMonth  =  ( cant) => {
+const  addMonth  =  (cant) => {
 
     return  new Date().addMonths(cant);
 }

@@ -8,7 +8,8 @@ function searchingAll( collection, from , limit, query,populate = '') {
             .exec((err, resp) => {
 
                 if (err) {
-                     reject('error al cargar asistencia', err)
+                    console.log(err);
+                     reject('error seachig data', err)
                 } else {
 
                     resolve(resp)
