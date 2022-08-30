@@ -4,7 +4,7 @@ const schema = mongoose.Schema;
 const  mongooseDelete = require('mongoose-delete'); 
 
 
-const TeacherSchema = new schema(
+const StaffSchema = new schema(
     {
         id: {
             type: String,
@@ -19,20 +19,24 @@ const TeacherSchema = new schema(
             type: String,
             required: true
         },
+        TypeSalary: {
+            type: String,
+            required: true
+        },
     },
     {
-        collection: 'Teachers',
+        collection: 'Staff', //TODO::  changes to staff
         timestamps: true,
       
 
     }
 );
 
-TeacherSchema.plugin(uniquevallidator, { message: '{PATH} must be unique' })
-TeacherSchema.plugin(mongooseDelete, {overrideMethods: 'all'})
-TeacherSchema.methods.toJSON = function () {
+StaffSchema.plugin(uniquevallidator, { message: '{PATH} must be unique' })
+StaffSchema.plugin(mongooseDelete, {overrideMethods: 'all'})
+StaffSchema.methods.toJSON = function () {
     const { __v, deleted, ...teacher } = this.toObject();
     return teacher;
 }
 
-module.exports = mongoose.model('Teachers', TeacherSchema);
+module.exports = mongoose.model('Staff', StaffSchema);

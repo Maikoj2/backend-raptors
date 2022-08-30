@@ -19,7 +19,7 @@ const getItems = async (req, res) => {
 */
 const createItem = async (req, res) => {
     const id_user = req.user._id;
-    const { id_SignUpclass, User, id_class, ...date } = req.body;
+    const {id_class, ...date } = req.body;
     date.Date = new Date(req.body.Date);
     const Registers = await SignUpClassModel.find({ id_class });
     const attendanceSaved = [];

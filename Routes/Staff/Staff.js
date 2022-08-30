@@ -3,16 +3,16 @@ const app = expres();
 const { check } = require('express-validator')
 
 const Persona = require('../../models/staff/people');
-const Profesor = require('../../models/staff/Teacher');
+const Profesor = require('../../models/staff/Staff');
 const Clase = require('../../models/discipline/class');
-const { getItems, createItem, updateItem } = require('../../Controllers/Staff/Teacher');
-const { isRolValid, ExistById } = require('../../helpers/Validators/dbValidators');
+const { getItems, createItem, updateItem } = require('../../Controllers/Staff/Staff');
+const { isRolValid, ExistById, isPaymodeValid } = require('../../helpers/Validators/dbValidators');
  
-const { BaseSalaryModel, TeacherModel } = require('../../models');
+const { BaseSalaryModel, StaffModel } = require('../../models');
 const { valid, token } = require('../../middleware');
 
 /**
- * get al  teachers registered 
+ * get al  Staff registered 
  */
 app.get('/', getItems);
 /**
@@ -21,7 +21,7 @@ app.get('/', getItems);
 app.put('/:id-search',[ 
     check('id-search', 'the id is invalide').isMongoId(),
     check('role').custom(isRolValid),
-    check('id').custom((id) => ExistById(id, TeacherModel)),
+    check('id').custom((id) => ExistById(id, StaffModel)),
     check('id_BaseSalary').custom((id_BaseSalary) => ExistById(id_BaseSalary, BaseSalaryModel)),
     valid.validateFields,
     token.verificatoken],updateItem);
@@ -44,6 +44,7 @@ app.post('/',[
     check('profession', 'the profession is required').not().isEmpty(),
     check('email', 'the email is ivalide').isEmail(),
     check('role').custom(isRolValid),
+    check('TypeSalary').custom(isPaymodeValid),
     valid.validateFields, 
     token.verificatoken], createItem);
 

@@ -1,7 +1,6 @@
 const expres = require('express')
 const app = expres();
-const pagomensual = require('../../models/facturas/MonthlyPayment');
-const { token,valid } = require('../../middleware');
+const { token } = require('../../middleware');
 const { getItems } = require('../../Controllers/accounting/MonthlyPaymenst');
 
 

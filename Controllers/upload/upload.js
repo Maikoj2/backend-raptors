@@ -13,7 +13,7 @@ const { UserModel, PeopleModel } = require('../../models');
 const UploadItem = async (req, res) => {
     const typeCollection = req.params.tipo;
     const id = req.params.id;
-    const CollectionsValide = ['Stuff', 'User']
+    const CollectionsValide = ['staff', 'User']
     if (CollectionsValide.indexOf(typeCollection) < 0)
         return response.error(req, res, 'Invalid collection type', 400, `the collections valides are: ${CollectionsValide.join(', ')}`);
 
@@ -51,7 +51,7 @@ const UploadItem = async (req, res) => {
 function updateByColletions(typeCollection, id, fileName, res, req) {
 
     const colletionshandler = {
-        Stuff: SearchingByIdOnDB(id,PeopleModel),
+        staff: SearchingByIdOnDB(id,PeopleModel),
         User: SearchingByIdOnDB(id,UserModel),
     };
    colletionshandler[typeCollection].then(resp => {

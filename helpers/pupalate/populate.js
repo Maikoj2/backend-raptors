@@ -7,7 +7,7 @@ const Athlete = [{
 }, { path: 'IdContact' }
 ];
 
-const Teacher = [{
+const staff = [{
     path: 'id',
     populate: [{
         path: 'user',
@@ -137,18 +137,47 @@ const Attendance = [{
 const Loan = [{
     path: 'idPeople',
     select: 'Names id SureNames email'
-},{
+}, {
     path: 'User',
     select: 'Names email'
 }]
 
+const payroll = [
+    {
+        path: 'id_staff',
+        select: 'TypeSalary profession TypeSalary id_BaseSalary',
+        populate: [{
+            path: 'id_BaseSalary',
+            select: 'position BaseSalary valuePerHour',
+        }]
+
+    },
+    {
+        path: 'id_Deducted',
+        select: 'health Pension Solarity_background source_retention , Total_Deducded',
+    },
+    {
+        path: 'id_accrued',
+        select: 'Days_worked id_ExtraHours commission bonus transportation_assistance Total_With_assistance Total_Without_assistance Total',
+        populate: [{
+            path: 'id_ExtraHours',
+            select: 'H_E_Daytime  H_E_Night Night_Surcharge H_Holiday_Daytime H_Holiday_Night H_E_F_Daytime H_E_F_Night Total',
+        }]
+    },
+    {
+        path: 'User',
+        select: 'Names email'
+    }
+]
+
 module.exports = {
     Athlete,
-    Teacher,
+    staff,
     SignUpClass,
     payModeSignUpClass,
     MonthlyAndDailypay,
     Class,
     Attendance,
-    Loan
+    Loan,
+    payroll
 }

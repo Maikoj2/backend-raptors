@@ -17,7 +17,7 @@ const getItems = async (req, res) => {
         SearchingAllOnDB(AthletesModel, Number(from), Number(limit), query, Populate.Athlete)
     ])
         .then(([count, user]) => response.success(res, res, 'load completed', 200, user, count))
-        .catch((err) => response.error(res, res, 'error loandig data for teachers', 500, err))
+        .catch((err) => response.error(res, res, 'error loandig data for Staff', 500, err))
 };
 
 /**

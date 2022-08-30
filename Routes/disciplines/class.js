@@ -2,9 +2,9 @@ const expres = require('express')
 const app = expres();
 const { getItems, createItem, updateItem } = require('../../Controllers/discipline/class');
 const { check  } = require('express-validator');
-const { ClassModel, DisciplineModel, TeacherModel } = require('../../models');
+const { ClassModel, DisciplineModel, StaffModel } = require('../../models');
 const { token, valid } = require('../../middleware');
-const { ExistById } = require('../../helpers/Validators/dbValidators');
+const { ExistById, ExistTeacher } = require('../../helpers/Validators/dbValidators');
 
 
 
@@ -17,7 +17,7 @@ app.get('/', getItems);
 app.post('/', [
     check('Names', 'the Names is required').not().isEmpty(),
     check('id_discipline').isMongoId().bail().custom((id_discipline) => ExistById(id_discipline, DisciplineModel)),
-    check('id_teacher').isMongoId().bail().custom((id_teacher) => ExistById(id_teacher, TeacherModel)),
+    check('id_teacher').isMongoId().bail().custom((id_teacher) => ExistTeacher(id_teacher, StaffModel)),
     check(['Names', 'DateStart','DateEnd',  'schedule' , 'Place' , 'HourStart', 'HourEnd' ], `data can't be empty`).not().isEmpty(),
     valid.validateFields,
     token.verificatoken
@@ -30,7 +30,7 @@ app.post('/', [
 app.put('/:id', [
     check('id').isMongoId().bail().custom((id) => ExistById(id, ClassModel)),
     check('id_discipline').isMongoId().bail().custom((id_discipline) => ExistById(id_discipline, DisciplineModel)),
-    check('id_teacher').isMongoId().bail().custom((id_teacher) => ExistById(id_teacher, TeacherModel)),
+    check('id_teacher').isMongoId().bail().custom((id_teacher) => ExistTeacher(id_teacher, StaffModel)),
     check(['Names', 'DateStart','DateEnd',  'schedule' , 'Place' , 'HourStart', 'HourEnd' ], `data can't be empty`).not().isEmpty(),
     valid.validateFields,
     token.verificatoken

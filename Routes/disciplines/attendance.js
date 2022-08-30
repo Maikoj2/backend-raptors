@@ -1,7 +1,7 @@
-var expres = require('express')
-var app = expres();
+const expres = require('express')
+const app = expres();
 const { check  } = require('express-validator');
-var Asistencia = require('../../models/discipline/attendance');
+const Asistencia = require('../../models/discipline/attendance');
  const { token, valid } = require('../../middleware');
 const { getItems, createItem, updateItem } = require('../../Controllers/discipline/Attendance');
 const { ClassModel } = require('../../models');
@@ -45,8 +45,8 @@ app.post('/',[
 
 app.delete('/:id',token.verificatoken,(req, res) => {
 
-    var id = req.params.id;
-    var data;
+    const id = req.params.id;
+    let data;
 
 
     Asistencia.deleteOne({_id: id}, (err, registroborrado) => {

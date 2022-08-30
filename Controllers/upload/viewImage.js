@@ -11,7 +11,7 @@ const { response } = require('../../helpers');
 
     const  img = req.params.img;
     const  typeCollection = req.params.tipo;
-    const CollectionsValide = ['Stuff', 'User']
+    const CollectionsValide = ['staff', 'User']
     if (CollectionsValide.indexOf(typeCollection) < 0) 
         return response.error(req, res, 'Collection invalide', 400, `valid Extensions  are: ${CollectionsValide.join(', ')}`);
 

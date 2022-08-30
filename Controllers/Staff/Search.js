@@ -45,7 +45,7 @@ const getItemsByCameOnColletion = async (req, res, next) => {
     from = Number(from);
 
     const colletions = {
-        Teachers: SearchingByNameOnDB(regex, PeopleModel, from, limit, 'TEACHER_ROLE'),
+        Staff: SearchingByNameOnDB(regex, PeopleModel, from, limit, 'TEACHER_ROLE'),
         athletes: SearchingByNameOnDB(regex, PeopleModel, from, limit, 'USER_ROLE'),
         Users: SearchingByNameOnDB(regex, UserModel, from, limit),
         disciplines: SearchingByNameOnDB(regex, DisciplineModel, from, limit),

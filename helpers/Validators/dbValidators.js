@@ -1,5 +1,6 @@
 const { RoleModel, payModeModel } = require("../../models");
-const { getNameColletios } = require("../../config/mongo")
+const { getNameColletios } = require("../../config/mongo");
+const { Populate } = require("..");
 
 
 
@@ -59,6 +60,30 @@ const ExistSignupontable = async ({id_Athlete, id_class}, Colletion) => {
 }
 
 
+const ExistTeacher = async (_id, collection) => {
+
+    const existData = await collection.findById({ _id }).populate(Populate.staff);
+    if (!existData) {
+        throw new Error(`the data whith id: '${_id}' not exist on database`);
+    }
+    if (existData.id.role !== 'TEACHER_ROLE') {
+        throw new Error(`the personal whith id: '${existData.id.id}' is not a teacher`); 
+    }
+
+
+
+};
+
+const DeletedBaseSalary = async (id_BaseSalary, collection) => {
+
+    const existData = await collection.find({ id_BaseSalary });
+    if (Object.keys(existData).length !== 0) {
+        throw new Error(`This record is assigned, please delete the staff record and try again'`);
+    }
+
+};
+
+
 
 
 
@@ -69,5 +94,7 @@ module.exports = {
     emailNoExist,
     ExistCollections,
     isPaymodeValid,
-    ExistSignupontable
+    ExistSignupontable,
+    ExistTeacher,
+    DeletedBaseSalary
 }

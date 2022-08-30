@@ -1,345 +1,87 @@
-var expres = require('express')
-var app = expres();
-var Nomina = require('../../models/nomina/nomina');
-var Horasextras = require('../../models/nomina/Horasextras');
-var Devengados = require('../../models/nomina/Devengado');
-var Deducidos = require('../../models/nomina/Deducido');
- const { verificatoken, token } = require('../../middleware');
-const Devengado = require('../../models/nomina/Devengado');
+const expres = require('express')
+const app = expres();
+const { check } = require('express-validator');
+const Nomina = require('../../models/payroll/payroll');
+const Horasextras = require('../../models/payroll/ExtrasHours');
+const Devengados = require('../../models/payroll/Accrued');
+const Deducidos = require('../../models/payroll/Deducded');
+const { token, valid } = require('../../middleware');
+const Devengado = require('../../models/payroll/Accrued');
+const {getItemsExtrasHours, updateItemExtrasHours } = require('../../Controllers/accounting/payroll/ValueEstraHours');
+const { ExistById } = require('../../helpers/Validators/dbValidators');
+const { ValueExtraHourslModel,  TransportAssitancelModel, payrollModel, StaffModel, DeductedModel, AccruedModel, ExtraHourslModel } = require('../../models');
+const { getItemsTransportAssitance, updateItemTransportAssitance } = require('../../Controllers/accounting/payroll/TransportAssitance');
+const { getItems, createItem, updateItem } = require('../../Controllers/accounting/payroll/payroll');
 
 
 
-//  rutas
-app.get('/', (req, res, next) => {
-
-    var desde = req.query.desde || 0;
-    desde = Number(desde);
-    Nomina.find({},)
-        .populate(
-            [
-                {
-                    path: "id_personal",
-                    select: '_id id_sueldoBase Profecion',
-                    populate:
-                        [
-                            {
-                                path: '_id', select: ' Nombres Apellidos Telefono'
-                            },
-                            {
-                                path: 'id_sueldoBase', select: ' Cargo Sueldo_Base Valor_Hora'
-                            }
-                        ]
-                },
-                {
-                    path: "id_Deducidos",
-                },
-                {
-                    path: "id_Devengado",
-                }
-            ]
-        )
-        .skip(desde)
-        .limit(5)
-        .exec(
-            (err, nomina) => {
-                if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        mensaje: 'Error cargando nomina',
-                        erros: err
-                    });
-                }
-                Nomina.estimatedDocumentCount({}, (err, conteo) => {
-
-                    res.status(200).json({
-                        ok: true,
-                        nominas: nomina,
-                        total: conteo
-                    });
-
-                })
+/*********************************************************************************************** /
+*                                      payroll rutes                                            *   
+************************************************************************************************/
 
 
-            });
+                             //get items of  payrolls //
+app.get('/',getItems);
 
 
-});
-// //////////////////////////////////////
-// almacenna los datos de nomina devengados, deducidos y horas extras
-app.post('/', token.verificatoken,
-    (req, res) => {
-        var body = req.body;
-        var id_usuario = req.usuario._id;
-        var nomina = new Nomina({
-            id_personal: body.id_personal,
-            id_Deducidos: body.id_Deducidos,
-            id_Devengado: body.id_Devengado,
-            fecha: body.fecha,
-            Total_neto: body.Total_neto,
-            Usuario: id_usuario
-        });
-
-        Promise.all([
-            BuscarPorIdFecha(nomina.id_personal, nomina.fecha, Deducidos),
-            BuscarPorIdFecha(nomina.id_personal, nomina.fecha, Devengados)
-        ]).then(respuestas => {
-
-            if (Object.keys(respuestas[0]).length === 0 ||
-                Object.keys(respuestas[1]).length === 0) {
-                return res.status(400).json({
-                    ok: false,
-                    mensaje: 'no a creado nomina o deducciones de este empleado ' + nomina.id_personal + ' ',
-                    erros: { message: 'cree su debengado o deducciones ' }
-                });
-            }
-
-            nomina.id_Deducidos = respuestas[0][0]._id
-            nomina.id_Devengado = respuestas[1][0]._id
-            guardardato(nomina)
-                .then(
-                    resp => {
-                        res.status(200).json({
-                            ok: true,
-                            message: ' datos fueron almacenado Correcamente',
-                            registro: resp,
-                        })
-                    }
-                )
+                             //create all  items of  payrolls in a specific Date and type salary //
+app.post('/:TypeSalary',[
+    check(['Date' , 'TypeSalary' ], `data can't be empty`).not().isEmpty(),
+    valid.validateFields,
+    token.verificatoken],
+   createItem);
 
 
+   app.put('/:id', [
+    check('id').isMongoId().bail().custom((id) => ExistById(id, payrollModel)),
+    check('id_staff').isMongoId().bail().custom((id) => ExistById(id, StaffModel)),
+    check('id_Deducted').isMongoId().bail().custom((id) => ExistById(id, DeductedModel)),
+    check('id_accrued').isMongoId().bail().custom((id) => ExistById(id, AccruedModel)),
+    valid.validateFields,
+    token.verificatoken],updateItem);
 
-        }).catch(e => {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'error al cargar archivos',
-                registro: e
-            });
-        })
+/*********************************************************************************************** */
+
+/*********************************************************************************************** /
 
 
 
 
-    });
-// //////////////////////////////////////////////////////
-app.post('/Horasextras', token.verificatoken,
-    (req, res) => {
-        var body = req.body;
-        var id_usuario = req.usuario._id;
-        var horasextras = new Horasextras({
-            id_personal: body.id_personal,
-            fecha: body.fecha,
-            H_E_Diurna: body.H_E_Diurna,
-            H_E_Nocturna: body.H_E_Nocturna,
-            Recargo_Nocturno: body.Recargo_Nocturno,
-            H_Fesiva_Diurna: body.H_Fesiva_Diurna,
-            H_Festiva_Nocturna: body.H_Festiva_Nocturna,
-            H_E_F_Diurna: body.H_E_F_Diurna,
-            H_E_F_Nocturna: body.H_E_F_Nocturna,
-            Valor_H_E_Diurna: body.Valor_H_E_Diurna,
-            Valor_H_E_Nocturna: body.Valor_H_E_Nocturna,
-            Valor_Recargo_Nocturno: body.Valor_Recargo_Nocturno,
-            Valor_H_Fesiva_Diurna: body.Valor_H_Fesiva_Diurna,
-            Valor_H_Festiva_Nocturna: body.Valor_H_Festiva_Nocturna,
-            Valor_H_E_F_Diurna: body.Valor_H_E_F_Diurna,
-            Valor_H_E_F_Nocturna: body.Valor_H_E_F_Nocturna,
-        });
-        console.log('entro');
-        guardardato(horasextras)
-            .then(
-                resp => {
-                    res.status(200).json({
-                        ok: true,
-                        message: ' datos fueron almacenado Correcamente',
-                        registro: resp,
-                    })
-                }
-            ).catch(e => {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: 'error al cargar archivos',
-                    registro: e
-                });
-            })
 
 
-    });
-// ////////////////////////////////////////////
-app.post('/devengados', token.verificatoken,
-    (req, res) => {
-        var body = req.body;
-        var devengados = new Devengados({
-            id_personal: body.id_personal,
-            fecha: body.fecha,
-            Dias_laborados: body.Dias_laborados,
-            id_HoraEXtra: body.id_HoraEXtra,
-            Basico_devengado: body.Basico_devengado,
-            Comiciones: body.Comiciones,
-            Bonificaciones: body.Bonificaciones,
-            Auxilio_transporte: body.Auxilio_transporte,
-            Total_conAuxiolioT: body.Total_conAuxiolioT,
-            Total_Sin_auxilio: body.Total_Sin_auxilio
-        });
+/*********************************************************************************************** /
+ *                              getItems value per percentage Extra hours                        *   
+ ************************************************************************************************/
 
-        BuscarPorIdFecha(body.id_personal, new Date(devengados.fecha), Horasextras)
-            .then(resp => {
+app.get('/ValueExtrasHours', getItemsExtrasHours);
 
-                devengados.id_HoraEXtra = resp[0]._id;
-                guardardato(devengados)
-                    .then(
-                        resp2 => {
-                            res.status(200).json({
-                                ok: true,
-                                message: ' datos fueron almacenado Correcamente',
-                                debengado: resp2,
-                            })
-                        }
-                    )
+/**
+ * Update value   per percentage Extra hours
+ */
+app.put('/ValueExtrasHours/:id',[
+    check('id').isMongoId().bail().custom((id) => ExistById(id, ValueExtraHourslModel)),
+    valid.validateFields,
+    token.verificatoken] ,updateItemExtrasHours);
+/*********************************************************************************************** */
 
-            }).catch(e => {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: 'error al cargar archivos',
-                    registro: e
-                });
-            })
-    });
-// ///////////////////////////////////////////////////////
-app.post('/deducidos', token.verificatoken,
-    (req, res) => {
-        var body = req.body;
-        var deducidos = new Deducidos({
-            id_personal: body.id_personal,
-            fecha: body.fecha,
-            Salud: body.Salud,
-            Pension: body.Pension,
-            Fondo_Solidadridad: body.Fondo_Solidadridad,
-            Retencion_fuente: body.Retencion_fuente,
-            Total_Deducido: body.Total_Deducido
-        });
+/*********************************************************************************************** /
+ * getItems value TransportAssitance
+ */
 
-        guardardato(deducidos)
-            .then(
-                resp => {
-                    res.status(200).json({
-                        ok: true,
-                        message: ' datos fueron almacenado Correcamente',
-                        registro: resp,
-                    })
-                }
-            ).catch(e => {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: 'error al cargar archivos',
-                    registro: e
-                });
-            })
+ app.get('/ValueTransportAssitance', getItemsTransportAssitance);
 
-
-    });
-
-// ==============================
-// actualizar   de los datos de deducidos, nomina,devengados y horas extras 
-// ==============================
-
-app.put('/:id', (req, res) => {
-
-    var id = req.params.id;
-    var body = req.body;
-    BuscarpotId(id, Nomina)
-        .then(resp => {
-
-            if (!resp) {
-                return res.status(400).json({
-                    ok: false,
-                    mensaje: 'nomina con ' + id + ' no existe',
-                    erros: { message: 'no existe el nomina con ese id ' }
-                });
-            }
-            resp[0].Total_neto = body.Total_neto;
-            console.log(resp[0]);
-            guardardato(resp[0]).then(
-                resp2 => {
-                    res.status(200).json({
-                        ok: true,
-                        message: ' datos fueron almacenado Correcamente',
-                        registro: resp2,
-                    })
-                }
-            )
-
-
-        }).catch(e => {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'error al cargar archivos',
-                registro: e
-            });
-        })
-
-});
-// ///////////////////////////////////////////////////
-
-app.put('/Horasextras/:id', (req, res) => {
-
-    var id = req.params.id;
-    var body = req.body;
-    BuscarpotId(id, Horasextras)
-        .then(resp => {
-
-            if (!resp) {
-                return res.status(400).json({
-                    ok: false,
-                    mensaje: 'Horasextras con ' + id + ' no existe',
-                    erros: { message: 'no existe el nomina con ese id ' }
-                });
-            }
-
-            resp[0].H_E_Diurna = body.H_E_Diurna,
-                resp[0].H_E_Nocturna = body.H_E_Nocturna,
-                resp[0].Recargo_Nocturno = body.Recargo_Nocturno,
-                resp[0].H_Fesiva_Diurna = body.H_Fesiva_Diurna,
-                resp[0].H_Festiva_Nocturna = body.H_Festiva_Nocturna,
-                resp[0].H_E_F_Diurna = body.H_E_F_Diurna,
-                resp[0].H_E_F_Nocturna = body.H_E_F_Nocturna,
-                resp[0].Valor_H_E_Diurna = body.Valor_H_E_Diurna,
-                resp[0].Valor_H_E_Nocturna = body.Valor_H_E_Nocturna,
-                resp[0].Valor_Recargo_Nocturno = body.Valor_Recargo_Nocturno,
-                resp[0].Valor_H_Fesiva_Diurna = body.Valor_H_Fesiva_Diurna,
-                resp[0].Valor_H_Festiva_Nocturna = body.Valor_H_Festiva_Nocturna,
-                resp[0].Valor_H_E_F_Diurna = body.Valor_H_E_F_Diurna,
-                resp[0].Valor_H_E_F_Nocturna = body.Valor_H_E_F_Nocturna,
-                guardardato(resp[0]).then(
-                    resp2 => {
-                        res.status(200).json({
-                            ok: true,
-                            message: ' datos fueron almacenado Correcamente',
-                            registro: resp2,
-                        })
-                    }
-                ).catch(e => {
-                    return res.status(500).json({
-                        ok: false,
-                        mensaje: 'error al cargar archivos',
-                        registro: e
-                    });
-                })
-
-
-        }).catch(e => {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'error al cargar archivos',
-                registro: e
-            });
-        })
-
-});
-// ////////////////////////////////////////////////////
-
+ /**
+  * Update value  TransportAssitance
+  */
+ app.put('/ValueTransportAssitance/:id',[
+     check('id').isMongoId().bail().custom((id) => ExistById(id, TransportAssitancelModel)),
+     valid.validateFields,
+     token.verificatoken] ,updateItemTransportAssitance);
+ /*********************************************************************************************** */
 app.put('/devengados/:id', (req, res) => {
 
-    var id = req.params.id;
-    var body = req.body;
+    const id = req.params.id;
+    const body = req.body;
     BuscarpotId(id, Devengados)
         .then(resp => {
 
@@ -389,8 +131,8 @@ app.put('/devengados/:id', (req, res) => {
 
 app.put('/deducidos/:id', (req, res) => {
 
-    var id = req.params.id;
-    var body = req.body;
+    const id = req.params.id;
+    const body = req.body;
     BuscarpotId(id, Deducidos)
         .then(resp => {
 
@@ -440,7 +182,7 @@ app.put('/deducidos/:id', (req, res) => {
 
 app.delete('/:id', token.verificatoken, (req, res) => {
 
-    var id = req.params.id;
+    const id = req.params.id;
 
 
     BuscarpotId(id, Nomina).then(resp => {
@@ -510,9 +252,9 @@ function guardardato(dato) {
 
 
 }
-function BuscarPorIdFecha(id, fecha, Colleccion) {
+function BuscarPorIdDate(id, Date, Colleccion) {
     return new Promise((resolve, reject) => {
-        Colleccion.find({ id_personal: id, fecha: fecha })
+        Colleccion.find({ id_personal: id, Date: Date })
             // .populate('usuario', 'Nombre email')
             .exec((err, clase) => {
 

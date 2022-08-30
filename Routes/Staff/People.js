@@ -6,7 +6,7 @@ const { token } = require('../../middleware');
 
 
 /**
- * get al  teachers registered 
+ * get al  Staff registered 
  */
  app.get('/', getItems);
  /**

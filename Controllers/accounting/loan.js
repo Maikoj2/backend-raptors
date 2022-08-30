@@ -32,7 +32,7 @@ const createItem = async (req, res) => {
 
 
     SavingOnDB(loan)
-        .then(resp => response.success(res, res, 'athlete was stored Safely', 201, resp))
+        .then(resp => response.success(res, res, 'loan was stored Safely', 201, resp))
         .catch((e) => response.error(res, res, 'error storeding peopel', 500, e))
 };
 
@@ -61,7 +61,7 @@ const updateItem = async (req, res) => {
  const deleteItem = async (req, res) => {
     const { id } = req.params;
     await UpdatingOnDB(id, LoanModel, { deleted: true} )
-    .then((savededUser) => {response.success(req, res, 'user deleted successfully', 200, savededUser)})
+    .then((savededUser) => {response.success(req, res, 'loan has been deleted successfully', 200, savededUser)})
 };
 
 module.exports = {

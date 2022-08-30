@@ -8,7 +8,7 @@ const ClassSchema = new schema({
 
     Names: { type: String, required: true},
     id_discipline: { type: schema.Types.ObjectId , ref: 'disciplines', required: [true, 'the id_discipline is required'] },
-    id_teacher: { type: String , ref: 'Teachers', required: true },
+    id_teacher: { type: String , ref: 'Staff', required: true },
     DateStart: { type: Date, required: [true, 'the date start is required'] },
     DateEnd: { type: Date, required: [true, 'the date end is required'] },
     schedule: { type: String, required: [true, 'the schedule is required'] },
