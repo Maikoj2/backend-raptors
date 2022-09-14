@@ -4,7 +4,9 @@
   "description": "servidor",
   "main": "index.js",
   "scripts": {
+    "build": "babel src -d lib",
     "start": "nodemon app.js",
+    "start2": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
