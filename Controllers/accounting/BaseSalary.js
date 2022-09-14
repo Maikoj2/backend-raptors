@@ -62,7 +62,7 @@ const updateItem = async (req, res) => {
  const deleteItem = async (req, res) => {
     const { id } = req.params;
     
-    await UpdatingOnDB(id, BaseSalaryModel, { deleted: true} )
+     BaseSalaryModel.delete({_id:id})
     .then((deletedData) => {response.success(req, res, 'Base salary has been deleted successfully', 200, deletedData)})
 };
 

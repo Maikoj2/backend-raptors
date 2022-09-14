@@ -1,7 +1,7 @@
 ////////////////////////////////////////
 function searchingAll( collection, from , limit, query,populate = '') {
     return new Promise((resolve, reject) => {
-        collection.find(query)
+        collection.find({})
             .skip(from)
             .limit(limit)
             .populate(populate)

@@ -20,19 +20,21 @@ app.get('/', getItems);
  */
 
 app.put('/:id',[ 
+    token.verificatoken,
     check('id', 'the id is invalide').isMongoId(),
      check('id').custom((id) => ExistById(id, DisciplineModel)),
     valid.validateFields,
-    token.verificatoken], updateItem);
+], updateItem);
 /**
  * create a discipline  registered 
  */
 app.post('/', [ 
+    token.verificatoken,
     check('Names', 'the occupNamesation is required').not().isEmpty(),
     check('valuePerHour', 'the valuePerHour is required').not().isEmpty(),
     check('valuePerMonth', 'the valuePerMonth is required').not().isEmpty(),
     valid.validateFields,
-    token.verificatoken], createItem);
+], createItem);
 /**
  * deleted (todo) discipline  registered 
  */

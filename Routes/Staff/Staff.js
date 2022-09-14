@@ -19,16 +19,18 @@ app.get('/', getItems);
  * upodate a Teache by id
  */
 app.put('/:id-search',[ 
+    token.verificatoken,
     check('id-search', 'the id is invalide').isMongoId(),
     check('role').custom(isRolValid),
     check('id').custom((id) => ExistById(id, StaffModel)),
     check('id_BaseSalary').custom((id_BaseSalary) => ExistById(id_BaseSalary, BaseSalaryModel)),
     valid.validateFields,
-    token.verificatoken],updateItem);
+],updateItem);
 /**
  * save a register on data base (a teacher)
  */
 app.post('/',[
+    token.verificatoken,
     check('id', 'the id is required').not().isEmpty(),
     check('Names', 'the Names is required').not().isEmpty(),
     check('IdType', 'the IdType is required').not().isEmpty(),
@@ -46,7 +48,7 @@ app.post('/',[
     check('role').custom(isRolValid),
     check('TypeSalary').custom(isPaymodeValid),
     valid.validateFields, 
-    token.verificatoken], createItem);
+], createItem);
 
 /**
  * 

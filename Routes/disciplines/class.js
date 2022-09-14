@@ -15,12 +15,12 @@ app.get('/', getItems);
 // ingresar Clase nuevo 
 // ==============================
 app.post('/', [
+    token.verificatoken,
     check('Names', 'the Names is required').not().isEmpty(),
     check('id_discipline').isMongoId().bail().custom((id_discipline) => ExistById(id_discipline, DisciplineModel)),
     check('id_teacher').isMongoId().bail().custom((id_teacher) => ExistTeacher(id_teacher, StaffModel)),
     check(['Names', 'DateStart','DateEnd',  'schedule' , 'Place' , 'HourStart', 'HourEnd' ], `data can't be empty`).not().isEmpty(),
     valid.validateFields,
-    token.verificatoken
 ], createItem);
 
 // ==============================
@@ -28,12 +28,12 @@ app.post('/', [
 // ==============================
 
 app.put('/:id', [
+    token.verificatoken,
     check('id').isMongoId().bail().custom((id) => ExistById(id, ClassModel)),
     check('id_discipline').isMongoId().bail().custom((id_discipline) => ExistById(id_discipline, DisciplineModel)),
     check('id_teacher').isMongoId().bail().custom((id_teacher) => ExistTeacher(id_teacher, StaffModel)),
     check(['Names', 'DateStart','DateEnd',  'schedule' , 'Place' , 'HourStart', 'HourEnd' ], `data can't be empty`).not().isEmpty(),
     valid.validateFields,
-    token.verificatoken
     ], updateItem);
 
 

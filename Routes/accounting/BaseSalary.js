@@ -14,20 +14,22 @@ app.get('/', getItems);
 // ingresar SueldoBase nuevo 
 // ==============================
 app.post('/', [
+    token.verificatoken,
     check(['position', 'BaseSalary', 'valuePerHour'], `data can't be empty`).not().isEmpty(),
     valid.validateFields,
-    token.verificatoken],
+],
     createItem);
 
 
-        // ==============================
+// ==============================
 // actualizar  los Personas
 // ==============================
 
-app.put('/:id',[
+app.put('/:id', [
+    token.verificatoken,
     check('id').isMongoId().bail().custom((id) => ExistById(id, BaseSalaryModel)),
     valid.validateFields,
-    token.verificatoken],
+],
     updateItem);
 
 
@@ -38,9 +40,10 @@ app.put('/:id',[
 // ==============================
 
 app.delete('/:id', [
+    token.verificatoken,
     check('id').isMongoId().bail().custom((id) => ExistById(id, BaseSalaryModel)).bail().custom((id) => DeletedBaseSalary(id, StaffModel)),
     valid.validateFields,
-    token.verificatoken],
+],
     deleteItem);
 
 

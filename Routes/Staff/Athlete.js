@@ -20,22 +20,24 @@ app.get('/', getItems);
  * Update a user by id 
  */
 app.put('/:id_search', [
+    token.verificatoken,
     check('id_search', 'the id_search is invalide').isMongoId(),
     check('id_search').custom((id_search) => ExistById(id_search, AthletesModel)),
     check(['id', 'IdContact','ContactNames',  'Names' , 'IdType' , 'SureNames', 'ContactSureNames'
     , 'Gender' , 'neighborhood', 'Address' , 'Phone' , 'occupation', 'DateofBirth' , 'DepartamentBirth'  ], `data can't be empty`).not().isEmpty(),
     valid.validateFields,
-    token.verificatoken], updateItem);
+], updateItem);
 
 /**
  * Create a new user on database 
  */
 app.post('/', [
+    token.verificatoken,
     check(['id', 'IdContact','ContactNames',  'Names' , 'IdType' , 'SureNames', 'ContactSureNames'
         , 'Gender' , 'neighborhood', 'Address' , 'Phone' , 'occupation', 'DateofBirth' , 'DepartamentBirth'  ], `data can't be empty`).not().isEmpty(),
     check('email', 'the email is ivalide').isEmail(),
     valid.validateFields,
-    token.verificatoken], createItem);
+], createItem);
 
 /**
  * delete a user by id 

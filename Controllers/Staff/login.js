@@ -1,7 +1,8 @@
 const { UserModel } = require('../../models')
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
-const { response } = require('../../helpers');
+
+const { response, JWT } = require('../../helpers');
+const { token } = require('../../middleware');
 
 /**
  * get a  list 
@@ -9,17 +10,24 @@ const { response } = require('../../helpers');
  * @param {*} res 
  */
 const Login = async (req, res) => {
-    const SEED = process.env.SEED
-
     const { email, password } = req.body;
-    await UserModel.findOne({ email}).then(userdb => {
-        if (!bcrypt.compareSync(password, userdb.password)) return response.error(req, res, 'wrong credentials', 401, '   ');
-        // crear token
-        const token = jwt.sign({ usuario: userdb }, SEED, { expiresIn: 14400 }) //4
-        response.success(req, res, {token: token},201,[userdb, {id: userdb._id}]);
+    await UserModel.findOne({ email }).then(userdb => {
+        if (!bcrypt.compareSync(password, userdb.password))
+            return response.error(req, res, 'WRONG_CREDENTIALS', 401, 'wrong credentials the email or password is incorrect');
+        JWT.cretateJWT(userdb)
+            .then(token => response.success(req, res, 'Autenticated', 201, { user: userdb, token }))
+
+
 
     })
 };
 
+const RevalidateToken = (req, res) => {
+    const data = req.user
+    JWT.cretateJWT(data)
+        .then(token => response.success(req, res, 'Newtoken ', 201, { user: data, token }))
 
-module.exports = Login;
+}
+
+
+module.exports = { Login, RevalidateToken };

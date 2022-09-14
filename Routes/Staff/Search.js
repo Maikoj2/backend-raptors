@@ -9,16 +9,16 @@ const { valid } = require('../../middleware');
 
 //  rutas
 app.get('/all/:search',[
-    check('search', 'the search must be min length 5 ').isLength({ min: 2 }),
     valid.validateFields,
+    check('search', 'the search must be min length 5 ').isLength({ min: 2 }),
 ], getItemsByname);
 
 
 // busca por colleciones
 app.get('/collection/:table/:search' ,[
+    valid.validateFields,
     check('search', 'the search must be min length 5 ').isLength({ min: 2 }),
     check('table').custom((table,next) =>ExistCollections(table,next)),
-    valid.validateFields,
 ] , getItemsByCameOnColletion );
 
 

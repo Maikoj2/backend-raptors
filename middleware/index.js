@@ -1,6 +1,7 @@
 const  middleware = {
     token: require('./autenticacion'),
-    valid: require('./ValidateInputs')
+    valid: require('./ValidateInputs'),
+    rol: require('./ValidateRol'),
 }
 
 

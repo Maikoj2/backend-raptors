@@ -21,6 +21,7 @@ const  models = {
     DeductedModel: require('./payroll/Deducded'),
     AccruedModel: require('./payroll/Accrued'),
     TransportAssitancelModel: require('./payroll/TransportAssitance'),
+    NameModel: require('./NamesVariables/nameVariables'),
 
 }
 module.exports = models

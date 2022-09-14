@@ -24,21 +24,23 @@ app.get('/', getItems);
 // ==============================
 
 app.put('/:id', [
+    token.verificatoken,
     check('id').isMongoId().bail().custom((id) => ExistById(id, SignUpClassModel)),
     valid.validateFields,
-    token.verificatoken], updateItem);
+], updateItem);
 
 // ==============================
 // ingresar Alumno nuevo y crea la base de datos de los que pagan diarios o mensual
 // ==============================
 app.post('/', [
     
+    token.verificatoken,
     check(['id_Athlete']).isMongoId().custom((id_Athlete) => ExistById(id_Athlete, AthletesModel)),
     check(['id_class']).isMongoId().bail() .custom((id_class) => ExistById(id_class, ClassModel)),
     check(['payMode']).not().isEmpty().bail().custom((payMode)=>isPaymodeValid(payMode)),
     body('id_Athlete').custom((value, { req }) => ExistSignupontable(req.body, SignUpClassModel) ),
     valid.validateFields,
-    token.verificatoken], createItem);
+], createItem);
 // ==============================
 // eliminar  los Usuarios
 // ==============================

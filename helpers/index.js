@@ -7,7 +7,8 @@ const  models = {
     DeletingMonthlyOrdailypay: require('./db/DeleteMonthlyOrdailypay'),
     SavingOnDB: require('./db/saving.js'),
     Populate: require('./pupalate/populate'),
-    SaveOrUpdateContact: require('./contactEmergecy/saveAndUpdating')
+    SaveOrUpdateContact: require('./contactEmergecy/saveAndUpdating'),
+    JWT: require('./JWT/CreateJTW')
 
 }
 module.exports = models

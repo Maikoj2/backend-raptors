@@ -60,7 +60,8 @@ const updateItem = async (req, res) => {
  */
  const deleteItem = async (req, res) => {
     const { id } = req.params;
-    await UpdatingOnDB(id, LoanModel, { deleted: true} )
+
+   LoanModel.delete({_id:id})
     .then((savededUser) => {response.success(req, res, 'loan has been deleted successfully', 200, savededUser)})
 };
 

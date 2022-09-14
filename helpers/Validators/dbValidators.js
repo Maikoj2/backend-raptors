@@ -84,6 +84,16 @@ const DeletedBaseSalary = async (id_BaseSalary, collection) => {
 };
 
 
+const ExistPayroll = async ({id_staff, Date}, Colletion) => {[]
+
+
+    const data = await Colletion.find({ id_staff, Date, deleted: false });
+    
+    if (Object.keys(data).length !== 0)
+     throw new Error(`this staff: '${id_staff}' is have a payroll in  this date '${Date}`);
+}
+
+
 
 
 
@@ -96,5 +106,6 @@ module.exports = {
     isPaymodeValid,
     ExistSignupontable,
     ExistTeacher,
-    DeletedBaseSalary
+    DeletedBaseSalary,
+    ExistPayroll
 }

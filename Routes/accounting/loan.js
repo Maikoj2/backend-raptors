@@ -36,8 +36,9 @@ app.put('/:id', [
 // ==============================
 
 app.delete('/:id', [
+    token.verificatoken,
     check('id').isMongoId().bail().custom((id) => ExistById(id, LoanModel)),
     valid.validateFields,
-    token.verificatoken], deleteItem);
+], deleteItem);
 
 module.exports = app;
