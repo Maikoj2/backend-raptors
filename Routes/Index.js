@@ -9,7 +9,6 @@ const RemoveExtension =(filename)=>{
 }
 fs.readdirSync(__dirname).filter((file)=>{
     const dir = file;
-
     if (file !== 'Index.js') {
         fs.readdirSync(`${__dirname}/${file}`).filter((file)=>{
             const  name = RemoveExtension(file)
