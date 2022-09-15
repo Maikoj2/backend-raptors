@@ -1,6 +1,6 @@
 const { SavingOnDB, SearchingByIdOnDB, Populate, response, UpdatingOnDB, DeletingMonthlyOrdailypay } = require("..");
 const { addMonth } = require("../Date/DatePrototype");
-const { DailypayModel, MonthlypayModel } = require("../../models");
+const { DailypayModel, MonthlypayModel } = require('@models');
 
 const savinDailyPayMode = async (id_SignUpclass, Price, User) => {
     const Daylypay = new DailypayModel({ id_SignUpclass, Price, User });

@@ -1,13 +1,14 @@
 const expres = require('express')
 const app = expres();
+require('module-alias/register')
 const { check, body } = require('express-validator');
-const { token, valid } = require('../../middleware');
+const { token, valid } = require('@middleware');
 
-const { getItemsExtrasHours, updateItemExtrasHours } = require('../../Controllers/accounting/payroll/ValueEstraHours');
-const { ExistById, isPaymodeValid, ExistPayroll, } = require('../../helpers/Validators/dbValidators');
-const { ValueExtraHourslModel, TransportAssitancelModel, payrollModel, StaffModel, payModeModel } = require('../../models');
-const { getItemsTransportAssitance, updateItemTransportAssitance } = require('../../Controllers/accounting/payroll/TransportAssitance');
-const { getItems, createItem, updateItem, createItems, deleteItem } = require('../../Controllers/accounting/payroll/payroll');
+const { getItemsExtrasHours, updateItemExtrasHours } = require('@Controllers/accounting/payroll/ValueEstraHours');
+const { ExistById, isPaymodeValid, ExistPayroll, } = require('@helpers/Validators/dbValidators');
+const { ValueExtraHourslModel, TransportAssitancelModel, payrollModel, StaffModel, payModeModel } = require('@models');
+const { getItemsTransportAssitance, updateItemTransportAssitance } = require('@Controllers/accounting/payroll/TransportAssitance');
+const { getItems, createItem, updateItem, createItems, deleteItem } = require('@Controllers/accounting/payroll/payroll');
 
 
 

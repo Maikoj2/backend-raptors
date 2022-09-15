@@ -1,10 +1,11 @@
 const expres = require('express')
 const app = expres();
-const { getItems, createItem, updateItem } = require('../../Controllers/discipline/class');
+require('module-alias/register')
+const { getItems, createItem, updateItem } = require('@Controllers/discipline/class');
 const { check  } = require('express-validator');
-const { ClassModel, DisciplineModel, StaffModel } = require('../../models');
-const { token, valid } = require('../../middleware');
-const { ExistById, ExistTeacher } = require('../../helpers/Validators/dbValidators');
+const { ClassModel, DisciplineModel, StaffModel } = require('@models');
+const { token, valid } = require('@middleware');
+const { ExistById, ExistTeacher } = require('@helpers/Validators/dbValidators');
 
 
 

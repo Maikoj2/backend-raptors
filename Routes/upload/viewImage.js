@@ -1,7 +1,9 @@
-var expres = require('express');
-const getImage = require('../../Controllers/upload/viewImage');
-var app = expres();
-const { token, validateFields } = require('../../middleware');
+
+const expres = require('express');
+const app = expres();
+require('module-alias/register')
+const getImage = require('@Controllers/upload/viewImage');
+const { token } = require('@middleware');
 
 
 

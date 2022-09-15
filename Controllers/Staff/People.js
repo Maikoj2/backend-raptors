@@ -1,6 +1,6 @@
-
-const { PeopleModel } = require('../../models')
-const { response, UpdatingOnDB, SavingOnDB, SearchingAllOnDB } = require('../../helpers');
+require('module-alias/register')
+const { PeopleModel } = require('@models')
+const { response, UpdatingOnDB, SavingOnDB, SearchingAllOnDB } = require('@helpers');
 
 
 /**

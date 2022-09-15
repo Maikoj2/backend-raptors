@@ -1,6 +1,7 @@
+require('module-alias/register')
 const jwt = require('jsonwebtoken');
 const { response } = require('../helpers');
-const { UserModel } = require('../models');
+const { UserModel } = require('@models');
 
 
 // ==============================

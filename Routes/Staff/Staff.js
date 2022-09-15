@@ -1,15 +1,15 @@
 const expres = require('express')
 const app = expres();
 const { check } = require('express-validator')
-
-const Persona = require('../../models/staff/people');
-const Profesor = require('../../models/staff/Staff');
-const Clase = require('../../models/discipline/class');
-const { getItems, createItem, updateItem } = require('../../Controllers/Staff/Staff');
-const { isRolValid, ExistById, isPaymodeValid } = require('../../helpers/Validators/dbValidators');
+require('module-alias/register')
+const Persona = require('@models/staff/people');
+const Profesor = require('@models/staff/Staff');
+const Clase = require('@models/discipline/class');
+const { getItems, createItem, updateItem } = require('@Controllers/Staff/Staff');
+const { isRolValid, ExistById, isPaymodeValid } = require('@helpers/Validators/dbValidators');
  
-const { BaseSalaryModel, StaffModel } = require('../../models');
-const { valid, token } = require('../../middleware');
+const { BaseSalaryModel, StaffModel } = require('@models');
+const { valid, token } = require('@middleware');
 
 /**
  * get al  Staff registered 

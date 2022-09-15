@@ -1,11 +1,11 @@
 const expres = require('express')
 const app = expres();
 const { check } = require('express-validator');
+require('module-alias/register')
 
-
-const { getItemsByname, getItemsByCameOnColletion } = require('../../Controllers/Staff/Search');
-const { ExistCollections } = require('../../helpers/Validators/dbValidators');
-const { valid } = require('../../middleware');
+const { getItemsByname, getItemsByCameOnColletion } = require('@Controllers/Staff/Search');
+const { ExistCollections } = require('@helpers/Validators/dbValidators');
+const { valid } = require('@middleware');
 
 //  rutas
 app.get('/all/:search',[

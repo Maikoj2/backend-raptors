@@ -1,15 +1,16 @@
 const expres = require('express')
 const app = expres();
+require('module-alias/register')
 const { check, body  } = require('express-validator');
-const Registro = require('../../models/discipline/signUpClass');
-const Pagodiario = require('../../models/bills/DailyPayment');
-const pagosMensuales = require('../../models/bills/MonthlyPayment');
-const { valid, token } = require('../../middleware');
-const Prestamo = require('../../models/bills/loan');
-const asistencia = require('../../models/discipline/attendance');
-const { getItems, createItem, updateItem } = require('../../Controllers/discipline/signUpClass');
-const { AthletesModel, ClassModel, SignUpClassModel } = require('../../models');
-const { isPaymodeValid, ExistSignupontable, ExistById } = require('../../helpers/Validators/dbValidators');
+const Registro = require('@models/discipline/signUpClass');
+const Pagodiario = require('@models/bills/DailyPayment');
+const pagosMensuales = require('@models/bills/MonthlyPayment');
+const { valid, token } = require('@middleware');
+const Prestamo = require('@models/bills/loan');
+const asistencia = require('@models/discipline/attendance');
+const { getItems, createItem, updateItem } = require('@Controllers/discipline/signUpClass');
+const { AthletesModel, ClassModel, SignUpClassModel } = require('@models');
+const { isPaymodeValid, ExistSignupontable, ExistById } = require('@helpers/Validators/dbValidators');
 
 
 

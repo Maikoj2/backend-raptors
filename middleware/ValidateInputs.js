@@ -1,3 +1,4 @@
+require('module-alias/register')
 const {validationResult} = require('express-validator');
 const { response } = require('../helpers');
 const validateFields = ( req, res, next ) => {

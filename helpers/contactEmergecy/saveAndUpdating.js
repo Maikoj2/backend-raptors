@@ -1,5 +1,5 @@
 
-const { ContactModel } = require("../../models");
+const { ContactModel } = require('@models');
 const saveRegister = require("../db/saving");
 const UpdateRegister = require("../db/updating");
 

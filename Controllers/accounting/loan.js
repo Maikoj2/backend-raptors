@@ -1,5 +1,6 @@
-const { SearchingAllOnDB, response, Populate, SavingOnDB, UpdatingOnDB } = require("../../helpers");
-const { LoanModel } = require("../../models");
+require('module-alias/register')
+const { SearchingAllOnDB, response, Populate, SavingOnDB, UpdatingOnDB } = require('@helpers');
+const { LoanModel } = require('@models');
 
 /**
  * get a  list 

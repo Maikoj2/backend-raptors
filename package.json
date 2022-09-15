@@ -29,5 +29,16 @@
     "mongoose-delete": "^0.5.4",
     "mongoose-unique-validator": "^3.1.0",
     "npm": "^8.19.0"
+  },
+  "_moduleAliases": {
+    "@"      : ".",
+    "@assets"      : "./assets",
+    "@config" : "./config",
+    "@Controllers"  : "./Controllers",
+    "@helpers"  : "./helpers",
+    "@middleware"  : "./middleware",
+    "@models"  : "./models",
+    "@Routes"  : "./Routes",
+    "@uploads" : "./uploads"
   }
 }

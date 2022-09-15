@@ -1,5 +1,5 @@
-const { SearchingAllOnDB, response, Populate, SavingOnDB, UpdatingOnDB } = require("../../../helpers");
-const {  ValueExtraHourslModel } = require("../../../models");
+const { SearchingAllOnDB, response, Populate, SavingOnDB, UpdatingOnDB } = require("@helpers");
+const {  ValueExtraHourslModel } = require("@models");
 
 /**
  * get a  list 

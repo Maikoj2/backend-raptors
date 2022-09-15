@@ -1,6 +1,6 @@
-
-const { ClassModel } = require("../../models");
-const { response, UpdatingOnDB, SavingOnDB, Populate, SearchingAllOnDB } = require('../../helpers');
+require('module-alias/register')
+const { ClassModel } = require('@models');
+const { response, UpdatingOnDB, SavingOnDB, Populate, SearchingAllOnDB } = require('@helpers');
 
 /**
  * get a data

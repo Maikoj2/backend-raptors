@@ -1,15 +1,16 @@
 const expres = require('express');
 const app = expres();
+require('module-alias/register')
 const { check } = require('express-validator');
-const { valid, token } = require('../../middleware');  
-const Deportista = require('../../models/staff/Athlete');
-const Persona = require('../../models/staff/people');
-const contatoEmergencia = require('../../models/staff/contactEmergen');
-const Registro = require('../../models/discipline/signUpClass');
-const { getItems, createItem, updateItem } = require('../../Controllers/Staff/Athlete');
+const { valid, token } = require('@middleware');  
+const Deportista = require('@models/staff/Athlete');
+const Persona = require('@models/staff/people');
+const contatoEmergencia = require('@models/staff/contactEmergen');
+const Registro = require('@models/discipline/signUpClass');
+const { getItems, createItem, updateItem } = require('@Controllers/Staff/Athlete');
  
-const { AthletesModel } = require('../../models');
-const { ExistById } = require('../../helpers/Validators/dbValidators');
+const { AthletesModel } = require('@models');
+const { ExistById } = require('@helpers/Validators/dbValidators');
 
 
 /**

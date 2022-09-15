@@ -1,5 +1,6 @@
-const { SearchingAllOnDB, response, Populate } = require("../../helpers");
-const {  MonthlypayModel } = require("../../models");
+require('module-alias/register')
+const { SearchingAllOnDB, response, Populate } = require('@helpers');
+const {  MonthlypayModel } = require('@models');
 
 /**
  * get a  list 

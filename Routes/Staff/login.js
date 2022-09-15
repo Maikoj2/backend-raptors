@@ -1,12 +1,13 @@
 const expres = require('express')
 const app = expres();
+require('module-alias/register')
 const { check } = require('express-validator')
-const { Login, RevalidateToken} = require('../../Controllers/Staff/login');
+const { Login, RevalidateToken} = require('@Controllers/Staff/login');
  
-const { emailNoExist } = require('../../helpers/Validators/dbValidators');
-const { valid, token } = require('../../middleware');
-const { verificatoken } = require('../../middleware/autenticacion');
-const { UserModel } = require('../../models');
+const { emailNoExist } = require('@helpers/Validators/dbValidators');
+const { valid, token } = require('@middleware');
+const { verificatoken } = require('@middleware/autenticacion');
+const { UserModel } = require('@models');
 
 app.post('/', [
    check('email').isEmail().withMessage('is not valid')

@@ -1,3 +1,4 @@
+require('module-alias/register')
 const { response, request } = require("express");
 const { response: Response} = require('../helpers');
 

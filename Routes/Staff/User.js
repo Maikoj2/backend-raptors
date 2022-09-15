@@ -1,11 +1,12 @@
 const expres = require('express');
 const app = expres();
+require('module-alias/register')
 const { check } = require('express-validator')
-const { valid, token } = require('../../middleware');
-const { getItems, createItem, updateItem, deleteItem } = require('../../Controllers/Staff/user');
+const { valid, token } = require('@middleware');
+const { getItems, createItem, updateItem, deleteItem } = require('@Controllers/Staff/user');
  
-const { isRolValid, emailExist, ExistById } = require('../../helpers/Validators/dbValidators');
-const { UserModel } = require('../../models');
+const { isRolValid, emailExist, ExistById } = require('@helpers/Validators/dbValidators');
+const { UserModel } = require('@models');
 
 /**
  * get a list of all users 

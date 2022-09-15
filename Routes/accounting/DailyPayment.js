@@ -1,8 +1,8 @@
 const expres = require('express')
 const app = expres();
-
-const {token, rol} = require('../../middleware');
-const { getItems } = require('../../Controllers/accounting/DailyPayment');
+require('module-alias/register')
+const {token, rol} = require('@middleware');
+const { getItems } = require('@Controllers/accounting/DailyPayment');
 
 
 

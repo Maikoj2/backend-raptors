@@ -1,7 +1,8 @@
 const expres = require('express')
 const app = expres();
-const { token } = require('../../middleware');
-const { getItems } = require('../../Controllers/accounting/MonthlyPaymenst');
+require('module-alias/register')
+const { token } = require('@middleware');
+const { getItems } = require('@Controllers/accounting/MonthlyPaymenst');
 
 
 

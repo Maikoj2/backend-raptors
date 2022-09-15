@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
-const { response } = require('../../helpers');
+require('module-alias/register')
+const { response } = require('@helpers');
 
 /**
  * get a data image

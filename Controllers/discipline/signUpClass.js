@@ -1,6 +1,7 @@
-const { SignUpClassModel, ClassModel } = require("../../models");
-const { response, UpdatingOnDB, SavingOnDB, SearchingByIdOnDB, Populate, SearchingAllOnDB } = require('../../helpers');
-const { savinDailyPayMode, savinMonthlyPayMode, updatingDailyPayMode, updatingmonthlyPayMode } = require("../../helpers/PayMode/SavingPaymode");
+require('module-alias/register')
+const { SignUpClassModel, ClassModel } = require('@models');
+const { response, UpdatingOnDB, SavingOnDB, SearchingByIdOnDB, Populate, SearchingAllOnDB } = require('@helpers');
+const { savinDailyPayMode, savinMonthlyPayMode, updatingDailyPayMode, updatingmonthlyPayMode } = require("@helpers/PayMode/SavingPaymode");
 
 /**
  * get a data

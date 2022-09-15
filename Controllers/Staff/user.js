@@ -1,6 +1,7 @@
-const { UserModel } = require('../../models')
+require('module-alias/register')
+const { UserModel } = require('@models')
 const bcrypt = require('bcryptjs');
-const { response, SavingOnDB, UpdatingOnDB, SearchingAllOnDB } = require('../../helpers');
+const { response, SavingOnDB, UpdatingOnDB, SearchingAllOnDB } = require('@helpers');
 
 /**
  * get a  list 

@@ -1,5 +1,6 @@
-const { SearchingByNameOnDB, response } = require("../../helpers");
-const { PeopleModel, UserModel, ClassModel, DisciplineModel, ContactModel } = require("../../models");
+require('module-alias/register')
+const { SearchingByNameOnDB, response } = require('@helpers');
+const { PeopleModel, UserModel, ClassModel, DisciplineModel, ContactModel } = require('@models');
 
 
 

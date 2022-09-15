@@ -1,6 +1,6 @@
-
-const { DisciplineModel } = require("../../models");
-const { response, UpdatingOnDB,  SavingOnDB} = require('../../helpers');
+require('module-alias/register')
+const { DisciplineModel } = require('@models');
+const { response, UpdatingOnDB,  SavingOnDB} = require('@helpers');
 
 /**
  * get a data

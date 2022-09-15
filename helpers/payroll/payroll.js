@@ -1,5 +1,5 @@
 const { payroll } = require('../pupalate/populate');
-const { payrollModel, ValueExtraHourslModel, TransportAssitancelModel } = require("../../models")
+const { payrollModel, ValueExtraHourslModel, TransportAssitancelModel } = require('@models')
 
 const savePayroll = async (id, req) => {
     const User = req.user._id;

@@ -1,10 +1,11 @@
 const expres = require('express')
 const app = expres();
-const { getItems, createItem, updateItem, deleteItem } = require('../../Controllers/accounting/BaseSalary');
+require('module-alias/register')
+const { getItems, createItem, updateItem, deleteItem } = require('@Controllers/accounting/BaseSalary');
 const { check } = require('express-validator');
-const { token, valid } = require('../../middleware');
-const { ExistById, DeletedBaseSalary } = require('../../helpers/Validators/dbValidators');
-const { BaseSalaryModel, StaffModel } = require('../../models');
+const { token, valid } = require('@middleware');
+const { ExistById, DeletedBaseSalary } = require('@helpers/Validators/dbValidators');
+const { BaseSalaryModel, StaffModel } = require('@models');
 
 //  rutas
 app.get('/', getItems);

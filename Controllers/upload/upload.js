@@ -1,9 +1,9 @@
-
 const fs = require('fs');
+require('module-alias/register')
 // const cloudinary = require('cloudinary').v2
 // cloudinary.config()
-const { SearchingByIdOnDB, response, SavingOnDB } = require('../../helpers');
-const { UserModel, PeopleModel } = require('../../models');
+const { SearchingByIdOnDB, response, SavingOnDB } = require('@helpers');
+const { UserModel, PeopleModel } = require('@models');
 
 
 

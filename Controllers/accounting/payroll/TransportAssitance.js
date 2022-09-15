@@ -1,5 +1,5 @@
-const { response, UpdatingOnDB } = require("../../../helpers");
-const { TransportAssitancelModel } = require("../../../models");
+const { response, UpdatingOnDB } = require("@helpers");
+const { TransportAssitancelModel } = require("@models");
 
 /**
  * get a  list 

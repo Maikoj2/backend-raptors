@@ -1,5 +1,6 @@
-const { SearchingAllOnDB, response, SavingOnDB, UpdatingOnDB } = require("../../helpers");
-const {  BaseSalaryModel } = require("../../models");
+require('module-alias/register')
+const { SearchingAllOnDB, response, SavingOnDB, UpdatingOnDB } = require('@helpers');
+const {  BaseSalaryModel } = require('@models');
 
 /**
  * get a  list 

@@ -1,4 +1,4 @@
-const { RoleModel, payModeModel } = require("../../models");
+const { RoleModel, payModeModel } = require('@models');
 const { getNameColletios } = require("../../config/mongo");
 const { Populate } = require("..");
 

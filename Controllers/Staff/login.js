@@ -1,8 +1,9 @@
-const { UserModel } = require('../../models')
+require('module-alias/register')
+const { UserModel } = require('@models')
 const bcrypt = require('bcryptjs');
 
-const { response, JWT } = require('../../helpers');
-const { token } = require('../../middleware');
+const { response, JWT } = require('@helpers');
+const { token } = require('@middleware');
 
 /**
  * get a  list 

@@ -1,6 +1,6 @@
-const { SearchingAllOnDB, response, Populate, SavingOnDB, UpdatingOnDB } = require("../../../helpers");
-const { savePayroll } = require("../../../helpers/payroll/payroll");
-const { payrollModel, StaffModel, ExtraHourslModel, DeductedModel, AccruedModel, ValueExtraHourslModel, TransportAssitancelModel } = require("../../../models");
+const { SearchingAllOnDB, response, Populate, SavingOnDB, UpdatingOnDB } = require("@helpers");
+const { savePayroll } = require("@helpers/payroll/payroll");
+const { payrollModel, StaffModel, ExtraHourslModel, DeductedModel, AccruedModel, ValueExtraHourslModel, TransportAssitancelModel } = require("@models");
 
 
 /**

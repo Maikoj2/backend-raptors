@@ -1,5 +1,6 @@
-const { response, SavingOnDB, Populate, SearchingAllOnDB, SearchingByIdOnDB, UpdatingOnDB } = require("../../helpers");
-const { AttendanceModel, LoanModel, SignUpClassModel, MonthlypayModel } = require("../../models");
+require('module-alias/register')
+const { response, SavingOnDB, Populate, SearchingAllOnDB, SearchingByIdOnDB, UpdatingOnDB } = require('@helpers');
+const { AttendanceModel, LoanModel, SignUpClassModel, MonthlypayModel } = require('@models');
 
 const getItems = async (req, res) => {
     const { from = 0, limit = 5 } = req.query;
