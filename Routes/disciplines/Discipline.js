@@ -3,9 +3,8 @@ const  app = expres();
 require('module-alias/register')
 const { check } = require('express-validator')
 const  Disciplina = require('@models/discipline/discipline');
-const  autenticacion = require('@middleware/autenticacion');
 const { getItems, createItem, updateItem } = require('@Controllers/discipline/Discipline');
- 
+
 const { ExistById } = require('@helpers/Validators/dbValidators');
 const { DisciplineModel } = require('@models');
 const { valid, token } = require('@middleware');

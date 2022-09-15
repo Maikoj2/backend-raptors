@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const cors = require('cors');
+const Path = require('../../pathResolveRout');
 class Server {
 
     constructor() {
@@ -24,7 +25,8 @@ class Server {
 
     routes() {
         /** dinamic rutes */
-        this.app.use('/', require('../../Routes'));
+        console.log(__dirname)
+        this.app.use('/', require(Path.routes));
     }
 
     listen() {

@@ -4,7 +4,9 @@
   "description": "servidor",
   "main": "index.js",
   "scripts": {
+    "build": "babel src -d lib",
     "start": "nodemon app.js",
+    "start2": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,11 +24,10 @@
     "express": "^4.17.3",
     "express-fileupload": "^1.3.1",
     "express-validator": "^6.14.2",
-    "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
-    "mkcert": "^1.5.0",
     "mongoose": "^6.5.2",
     "mongoose-delete": "^0.5.4",
+<<<<<<< HEAD
     "mongoose-unique-validator": "^3.1.0",
     "npm": "^8.19.0"
   },
@@ -40,5 +41,8 @@
     "@models"  : "./models",
     "@Routes"  : "./Routes",
     "@uploads" : "./uploads"
+=======
+    "mongoose-unique-validator": "^3.1.0"
+>>>>>>> b5b3b05712f89823296401af2e00b9d1e8429ecb
   }
 }
