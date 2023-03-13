@@ -93,6 +93,17 @@ const ExistPayroll = async ({id_staff, Date}, Colletion) => {[]
      throw new Error(`this staff: '${id_staff}' is have a payroll in  this date '${Date}`);
 }
 
+/**
+ * 
+ */
+
+const CollectionsValide = (collection= '', collections = [])=>{
+    const include = collections.includes(collection);
+    if(!include)
+    {throw new Error(`the colletion ${collection}  does not exist, the collection valids are  ${collection}`);}
+    return true
+}
+
 
 
 
@@ -107,5 +118,6 @@ module.exports = {
     ExistSignupontable,
     ExistTeacher,
     DeletedBaseSalary,
-    ExistPayroll
+    ExistPayroll,
+    CollectionsValide
 }

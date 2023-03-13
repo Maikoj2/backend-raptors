@@ -1,9 +1,16 @@
 const fs = require('fs');
-require('module-alias/register')
-// const cloudinary = require('cloudinary').v2
-// cloudinary.config()
+require('module-alias/register');
+
+const cloudinary = require('cloudinary').v2
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_APY_KEY,
+    api_secret: process.env.CLOUDINARY_API_SERCRET,
+    secure: true
+})
 const { SearchingByIdOnDB, response, SavingOnDB } = require('@helpers');
 const { UserModel, PeopleModel } = require('@models');
+const { UpdatingOnDB } = require('../../helpers');
 
 
 
@@ -13,12 +20,8 @@ const { UserModel, PeopleModel } = require('@models');
  * @param {*} res 
  */
 const UploadItem = async (req, res) => {
-    const typeCollection = req.params.tipo;
+    const typeCollection = req.params.collection;
     const id = req.params.id;
-    const CollectionsValide = ['staff', 'User']
-    if (CollectionsValide.indexOf(typeCollection) < 0)
-        return response.error(req, res, 'Invalid collection type', 400, `the collections valides are: ${CollectionsValide.join(', ')}`);
-
     if (!req.files)
         return response.error(req, res, 'THE FILE DID NOT LOAD', 400, `you did not select any image`);
 
@@ -44,34 +47,40 @@ const UploadItem = async (req, res) => {
 
     File.mv(path, err => {
         if (err) return response.error(req, res, 'Error upload file', 400, err);
+        cloudinary.uploader
+            .upload(path,{folder: "Raptor_Images_uploads",})
+            .then(({secure_url}) =>{ updateByColletions(typeCollection, id, secure_url, res, req, path)});
 
-        updateByColletions(typeCollection, id, fileName, res, req);
     })
 
 };
-
-function updateByColletions(typeCollection, id, fileName, res, req) {
+function updateByColletions(typeCollection, id, secure_url, res, req,path) {
 
     const colletionshandler = {
-        staff: SearchingByIdOnDB(id,PeopleModel),
-        User: SearchingByIdOnDB(id,UserModel),
+        staff: SearchingByIdOnDB(id, PeopleModel),
+        User: SearchingByIdOnDB(id, UserModel),
     };
-   colletionshandler[typeCollection].then(resp => {
-   
-    console.log(resp);
 
-        const oldPath = `./uploads/${typeCollection}/${ resp[0].img}`;
-        //  si exite, elimina la imagen anterior
-        (fs.existsSync(oldPath)) && fs.unlinkSync(oldPath)
-
-        resp[0].img = fileName;
-        console.log(resp);
-        SavingOnDB(resp[0])
-            .then(resp => response.success(req, res, 'Athlete image updated successfully', 200, resp))
+    colletionshandler[typeCollection].then(resp => {
+        // elimina la imagen del backend
+        fs.unlinkSync(path)
+        if(resp.img){
+            const nombrearr = resp.img.split('/')
+            const nombre = nombrearr[nombrearr.length -1];
+            const [ public_id] = nombre.split('.');
+            cloudinary.uploader.destroy(public_id)
+        }
+        resp.img = secure_url;
+        UpdatingOnDB(
+            resp._id,
+            (typeCollection === 'User' ? UserModel : PeopleModel),
+            resp
+        )
+            .then(resp => response.success(req, res, 'image updated successfully', 200, resp))
             .catch(e => response.error(req, res, 'error loading files when updating', 500, e))
 
     }).catch(e => {
-    
+
         return response.error(req, res, 'error loading files when searching by id', 500, e)
 
     })
@@ -79,7 +88,5 @@ function updateByColletions(typeCollection, id, fileName, res, req) {
 
 
 module.exports = {
-
-    UploadItem,
-
+    UploadItem
 }

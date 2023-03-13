@@ -33,8 +33,8 @@ const getItem = (req, res) => { };
  * @param {*} res 
  */
 const createItem = async (req, res) => {
-    const { Name , email , password , img  ,role} = req.body;
-    const user = new UserModel({ Name , email , password , img  ,role});
+    const { Names , email , password , img  ,role} = req.body;
+    const user = new UserModel({ Names , email , password , img  ,role});
     user.password = bcrypt.hashSync(password, 10);
     await SavingOnDB(user)
     .then((userSaved) => {  response.success(req, res, 'user created successfully', 201, userSaved)})

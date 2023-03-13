@@ -18,7 +18,7 @@ app.get('/', token.verificatoken, getItems);
  */
 app.post('/', [
     check('email', 'the email is invalide').isEmail(),
-    check('Name', 'the email is required').not().isEmpty(),
+    check('Names', 'the email is required').not().isEmpty(),
     check('password', 'the password is required').not().isEmpty(),
     check('password', 'the must be greater than 6 characters').isLength({ min: 6 }),
     check('role').custom(isRolValid),
