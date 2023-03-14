@@ -16,8 +16,8 @@ const getItems = async (req, res) => {
         UserModel.countDocuments( query ),
         SearchingAllOnDB(UserModel,  Number(from), Number(limit), query)
     ])
-    .then(([count, user]) =>  response.success(res, res, 'load completed', 200, user,count ))
-    .catch((err) =>  response.error(res, res,'error loandig data for User', 500, err))
+    .then(([count, user]) =>  response.success(req, res, 'load completed', 200, user,count ))
+    .catch((err) =>  response.error(req, res,'error loandig data for User', 500, err))
 };
 
 /**
@@ -36,6 +36,7 @@ const createItem = async (req, res) => {
     const { Names , email , password , img  ,role} = req.body;
     const user = new UserModel({ Names , email , password , img  ,role});
     user.password = bcrypt.hashSync(password, 10);
+    (user.img ==='null')&&(user.img = process.env.IMAGE_NOFOUND)
     await SavingOnDB(user)
     .then((userSaved) => {  response.success(req, res, 'user created successfully', 201, userSaved)})
     .catch((err) => {  response.error(req, res, 'error creating user', 500, err)})

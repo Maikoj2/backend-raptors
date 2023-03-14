@@ -57,7 +57,7 @@ const PeopleSchema = new schema({
     img: { 
         type: String, 
         required: false , 
-        default: ' '
+        default: 'null'
     },
     DateofBirth:  { 
         type: Date, 

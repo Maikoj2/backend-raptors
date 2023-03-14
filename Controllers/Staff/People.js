@@ -30,6 +30,7 @@ const createItem = async (req, res) => {
 
     const { body } = req;
     const id_user = req.user._id;
+    
 
     const People = new PeopleModel({
         id: body._id,
@@ -49,6 +50,7 @@ const createItem = async (req, res) => {
         role: body.role,
         user: id_user
     });
+    (People.img ==='null')&&(People.img = process.env.IMAGE_NOFOUND)
     await SavingOnDB(People)
         .then(resp => response.success(res, res, 'people was stored Safely', 201, resp))
         .catch((e) => response.error(res, res, 'error storeding peopel', 500, e))
