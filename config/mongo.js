@@ -10,12 +10,8 @@ const dbConnection = () => {
         useUnifiedTopology: true,
         
     }, (err, res) => {
-        if (!err) {
-            console.log('****** CONECTION SUCCESSFULLY ******')
-        } else {
-            console.log('****** ERROR CONECTION  ******' , err);
-
-        }
+        if (err) return console.log('****** ERROR CONECTION  ******' , err);
+        return  console.log('****** CONECTION SUCCESSFULLY ******')
     });
 
 }

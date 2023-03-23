@@ -18,7 +18,7 @@ app.get('/', token.verificatoken, getItems);
  */
 app.post('/', [
     check('email', 'the email is invalide').isEmail(),
-    check('Names', 'the email is required').not().isEmpty(),
+    check('Names', 'the Name is required').not().isEmpty(),
     check('password', 'the password is required').not().isEmpty(),
     check('password', 'the must be greater than 6 characters').isLength({ min: 6 }),
     check('role').custom(isRolValid),
@@ -32,6 +32,7 @@ app.post('/', [
 app.put('/:id', [
     check('id', 'the id is invalide').isMongoId(),
     check('role').custom(isRolValid),
+    check('Names', 'the Name is required').not().isEmpty(),
     check('id').custom((id) => ExistById(id, UserModel)),
     valid.validateFields,
     token.verificatoken

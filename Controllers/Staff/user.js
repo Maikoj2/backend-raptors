@@ -36,7 +36,7 @@ const createItem = async (req, res) => {
     const { Names , email , password , img  ,role} = req.body;
     const user = new UserModel({ Names , email , password , img  ,role});
     user.password = bcrypt.hashSync(password, 10);
-    (user.img ==='null')&&(user.img = process.env.IMAGE_NOFOUND)
+    (user.img ==='' ||!user.img)&&(user.img = process.env.IMAGE_NOFOUND)
     await SavingOnDB(user)
     .then((userSaved) => {  response.success(req, res, 'user created successfully', 201, userSaved)})
     .catch((err) => {  response.error(req, res, 'error creating user', 500, err)})
@@ -65,6 +65,10 @@ const updateItem = async (req, res) => {
  */
 const deleteItem = async (req, res) => {
     const { id } = req.params;
+    const { user } = req;
+    if (id === user._id) {
+        response.error(req, res,'Error', 500, `you cannot delete yourself`)
+    }
     await UpdatingOnDB(id, UserModel, { deleted: true} )
     .then((savededUser) => {response.success(req, res, 'user deleted successfully', 200, savededUser)})
 };
