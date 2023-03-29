@@ -67,7 +67,7 @@ const deleteItem = async (req, res) => {
     const { id } = req.params;
     const { user } = req;
     if (id === user._id) {
-        response.error(req, res,'Error', 500, `you cannot delete yourself`)
+       return response.error(req, res,'ERROR_DELETED', 401, `you cannot delete yourself`)
     }
     await UpdatingOnDB(id, UserModel, { deleted: true} )
     .then((savededUser) => {response.success(req, res, 'user deleted successfully', 200, savededUser)})

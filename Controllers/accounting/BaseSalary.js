@@ -15,7 +15,7 @@ const getItems = async (req, res) => {
         BaseSalaryModel.countDocuments(query),
         SearchingAllOnDB(BaseSalaryModel, Number(from), Number(limit), query)
     ])
-        .then(([count, user]) => response.success(res, res, 'load completed', 200,{BaseSalary: user} , count))
+        .then(([count, user]) => response.success(res, res, 'load completed', 200, user , count))
         .catch((err) => response.error(res, res, 'error loandig data for Base salary', 500, err))
 };
 

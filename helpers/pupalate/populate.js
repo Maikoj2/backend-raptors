@@ -9,13 +9,14 @@ const Athlete = [{
 
 const staff = [{
     path: 'id',
+    select: 'id Names IdType SureNames Gender neighborhood Address Phone occupation email EPS img DateofBirth DepartamentBirth MunicipeBirth role ',
     populate: [{
         path: 'user',
-        select: 'Nombre email'
+        select: 'Names email'
     }]
 }, {
     path: 'id_BaseSalary',
-    select: 'position position valuePerHour'
+    select: 'position BaseSalary valuePerHour'
 }];
 
 const SignUpClass = [{
